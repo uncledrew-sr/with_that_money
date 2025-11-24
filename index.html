@@ -1,12 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" class="no-js">
 <head>
-  <title>Bubble Flask</title>
-  <link rel="stylesheet" href="bubble.css">
+  <meta charset="UTF-8" />
+  <title>가치계산기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div id="game-container"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-  <script src="bubble.js"></script>
+<!-- mode-basic = 경험형 사용자 / mode-goal = 목표형 사용자 -->
+<body class="mode-basic">
+  <div class="app">
+    <header class="app-header">
+      <div class="app-header-left">
+        <div class="app-icon">
+          <span class="app-icon-inner">☕</span>
+        </div>
+        <span class="app-title">가치계산기</span>
+      </div>
+      <!-- 목표형 -->
+      <button class="wishlist-edit">위시리스트 수정하기</button>
+    </header>
+    <!-- 목표형 : 진행 모달 -->
+    <section class="goal-progress">
+      <div class="goal-progress-top">
+        <span class="goal-progress-label">52% 달성</span>
+        <span class="goal-progress-target">에어팟 프로2</span>
+      </div>
+      <div class="goal-progress-bar">
+        <div class="goal-progress-fill" style="width:52%"></div>
+      </div>
+    </section>
+    <!-- 로그인 / 위시리스트 안내 배너 -->
+    <section class="hint-banner">
+      <!-- 기본 화면 텍스트 -->
+      <p class="hint-text hint-basic">로그인하고 위시리스트 입력하기</p>
+      <!-- 목표형 화면 텍스트 (CSS에서 토글) -->
+      <p class="hint-text hint-goal">위시리스트 입력하기</p>
+    </section>
+
+    <!-- 금액 입력(처럼 보이는) 캡슐 -->
+    <section class="amount-section">
+      <div class="amount-pill">
+        <div class="amount-value">29,050 원</div>
+        <button class="amount-equal-btn" type="button" aria-label="계산하기">
+          <span class="equal-icon">=</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 카테고리 칩 -->
+    <section class="category-section">
+      <div class="category-scroll">
+        <button class="chip chip-active">아메리카노</button>
+        <button class="chip">택시</button>
+        <button class="chip">햄버거</button>
+        <button class="chip">피자</button>
+        <button class="chip chip-more" aria-label="더 보기">
+          <span class="chip-more-icon">›</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 버블 + 아메리카노 잔수 카드 섹션 -->
+    <section class="bubble-section">
+      <div class="bubble-wrapper">
+        <!-- 위에 올라오는 아메리카노 잔수 카드 -->
+        <div class="summary-card summary-card-over-bubble">
+          <div class="summary-left">
+            <div class="summary-icon">☕️</div>
+            <p class="summary-text">
+              아메리카노 기준
+              <a href="#" class="summary-amount-link">3잔</a> <!-- 3잔 / 8.3잔 등 상태에 따라 변경 -->
+            </p>
+          </div>
+          <div class="summary-right">기준가: 3,500원</div>
+        </div>
+
+        <!-- 아래쪽 버블 액팅 들어갈 영역 -->
+        <div class="bubble-placeholder">
+          <!-- 여기 나중에 버블 애니메이션/캔버스/DOM 들어가면 됨 -->
+          <span class="bubble-placeholder-text">버블 영역 (나중에 애니메이션)</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 광고 카드 -->
+    <section class="ad-section">
+      <div class="ad-card">
+        <div class="ad-label-row">
+          <span class="ad-label-title">광고</span>
+          <span class="ad-label-pill">AD</span>
+        </div>
+
+        <div class="ad-content">
+          <div class="ad-thumb">
+            <!-- 썸네일 이미지 필요하면 <img> 넣기 -->
+          </div>
+          <div class="ad-text">
+            <p class="ad-title">나이키로 완성하는 데일리무드</p>
+            <p class="ad-brand">나이키</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 목표 달성 축하 모달 (목표 달성시.png) ======= -->
+    <section class="goal-modal goal-modal-celebrate" aria-hidden="true">
+      <div class="goal-modal-card">
+        <button class="goal-modal-close" type="button" aria-label="닫기">×</button>
+        <div class="goal-modal-emoji">🎉</div>
+        <p class="goal-modal-title">
+          축하합니다!<br />
+          ‘에어팟 프로 2’<br />
+          구매할 돈이 모였어요
+        </p>
+        <p class="goal-modal-sub">누적 금액 : 500,000</p>
+        <button class="goal-modal-cta" type="button">사러가기</button>
+      </div>
+    </section>
+
+    <!-- ======= 누적 금액 안내 모달 (애니메이션 후 모달.png) ======= -->
+    <section class="goal-modal goal-modal-saving" aria-hidden="true">
+      <div class="goal-modal-card">
+        <button class="goal-modal-close" type="button" aria-label="닫기">×</button>
+        <p class="goal-modal-reset">누적 금액 초기화 하기</p>
+        <div class="goal-modal-emoji">💸</div>
+        <p class="goal-modal-title">
+          329,950원만 모으면<br />
+          ‘에어팟 프로 2’가 내 손에!
+        </p>
+        <p class="goal-modal-sub">현재 누적 금액 : 140,000</p>
+        <p class="goal-modal-big-amount">29,050원</p>
+        <button class="goal-modal-cta" type="button">모으기</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

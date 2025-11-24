@@ -1,29 +1,523 @@
+:root {
+  --app-bg: #f3f5fb;
+  --card-bg: #ffffff;
+  --primary: #4f6bff;
+  --primary-soft: #eff2ff;
+  --text-main: #15181f;
+  --text-sub: #8d95a8;
+  --border-soft: #e1e5f0;
+  --shadow-soft: 0 16px 40px rgba(17, 24, 39, 0.12);
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  background: var(--app-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Noto Sans KR", "Segoe UI", sans-serif;
+  color: var(--text-main);
+}
+
+/* 메인 앱 카드 */
+
+.app {
+  width: 390px;
+  max-width: 100%;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  padding: 24px 20px 28px;
+}
+
+/* 헤더 */
+
+.app-header {
+  display: flex;
   align-items: center;
-  min-height: 100vh;
-  background-color: #333;
+  justify-content: space-between;
 }
 
-#game-container {
-  width: 500px;
-  height: 800px;
-  background-color: #f0f0f0;
-  border: 1px solid #000;
-  box-sizing: border-box;
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 30% 10%, #ffffff, #4f7dfd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-icon-inner {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.app-title {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.wishlist-edit {
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: underline;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+/* 진행바 (목표형) */
+
+.goal-progress {
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.goal-progress-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.goal-progress-label {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.goal-progress-target {
+  color: var(--text-sub);
+}
+
+.goal-progress-bar {
   position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #e1e5f0;
   overflow: hidden;
 }
 
-.bubble {
-  border-radius: 50%; /* circle */
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
+.goal-progress-fill {
   position: absolute;
-  box-shadow: inset 0 0 5px rgba(255,255,255,0.5), 0 0 3px rgba(0,0,0,0.3);
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+/* 힌트 배너 */
+
+.hint-banner {
+  margin-top: 18px;
+}
+
+.hint-text {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  background: #eef3ff;
+  color: #6070a3;
+}
+
+/* 금액 캡슐 */
+
+.amount-section {
+  margin-top: 20px;
+}
+
+.amount-pill {
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--primary);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.amount-value {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.amount-equal-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.equal-icon {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* 카테고리 칩 */
+
+.category-section {
+  margin-top: 18px;
+}
+
+.category-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
+  padding: 9px 16px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip-active {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-soft);
+  font-weight: 600;
+}
+
+.chip-more {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-more-icon {
+  font-size: 18px;
+}
+
+/* 요약 카드 */
+
+.summary-card {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.summary-text {
+  margin: 0;
+  font-size: 14px;
+}
+
+.summary-amount-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.summary-right {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+/* 버블 영역 placeholder */
+
+.bubble-section {
+  margin-top: 18px;
+}
+
+.bubble-placeholder {
+  border-radius: 24px;
+  background: linear-gradient(to bottom, #ffffff 40%, #f5f5f7 100%);
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c1c7d8;
+  font-size: 13px;
+  border: 1px solid #f1f2f7;
+}
+
+.bubble-placeholder-text {
+  opacity: 0.8;
+}
+
+/* 광고 카드 */
+
+.ad-section {
+  margin-top: 18px;
+}
+
+.ad-card {
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  padding: 14px 16px 16px;
+}
+
+.ad-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.ad-label-title {
+  font-weight: 600;
+}
+
+.ad-label-pill {
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  padding: 1px 6px;
+  font-size: 10px;
+  color: var(--text-sub);
+}
+
+.ad-content {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ad-thumb {
+  width: 120px;
+  height: 72px;
+  border-radius: 14px;
+  background: #dde3f0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ad-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-text {
+  flex: 1;
+}
+
+.ad-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ad-brand {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+/* 모달 공통 */
+
+.goal-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  background: rgba(15, 23, 42, 0.3);
+  z-index: 20;
+}
+
+.goal-modal-card {
+  width: 90%;
+  max-width: 360px;
+  border-radius: 28px;
+  padding: 28px 22px 26px;
+  background: #715bff;
+  color: #ffffff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  text-align: center;
+  position: relative;
+}
+
+.goal-modal-close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  border: none;
+  background: none;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.goal-modal-emoji {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  margin: 6px auto 16px;
+}
+
+.goal-modal-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.goal-modal-sub {
+  margin: 0 0 18px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.goal-modal-big-amount {
+  margin: 0 0 18px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.goal-modal-cta {
+  width: 100%;
+  height: 48px;
+  border-radius: 999px;
+  border: none;
+  background: #ffffff;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.goal-modal-reset {
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  margin: 0;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+/* 모드별 토글 -------------------------------- */
+
+/* 기본: 목표형 요소 숨김 */
+body.mode-basic .wishlist-edit,
+body.mode-basic .goal-progress {
+  display: none;
+}
+
+body.mode-basic .hint-goal {
+  display: none;
+}
+
+body.mode-basic .hint-basic {
+  display: block;
+}
+
+/* 목표형 */
+body.mode-goal .wishlist-edit,
+body.mode-goal .goal-progress {
+  display: block;
+}
+
+body.mode-goal .hint-basic {
+  display: none;
+}
+
+body.mode-goal .hint-goal {
+  display: block;
+}
+
+/* 모달 show 클래스 */
+.goal-modal.is-open {
+  display: flex;
+}
+/* 버블 섹션 래퍼 */
+.bubble-section {
+  margin-top: 18px;
+}
+
+.bubble-wrapper {
+  position: relative;
+}
+
+/* 버블 위로 뜨는 요약 카드 */
+.summary-card-over-bubble {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: -18px;          /* 위로 살짝 튀어나오게 */
+  z-index: 2;
+}
+
+/* 카드가 겹치니까 버블 박스는 위쪽 여백을 더 준다 */
+.bubble-placeholder {
+  margin-top: 32px;    /* 카드 높이만큼 내려줌 */
+  border-radius: 24px;
+  background: linear-gradient(to bottom, #ffffff 40%, #f5f5f7 100%);
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c1c7d8;
+  font-size: 13px;
+  border: 1px solid #f1f2f7;
 }

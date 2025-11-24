@@ -2,28 +2,28 @@
 const { Engine, Runner, Bodies, World, Composite, Events } = Matter;
 
 // flask size
-const CONTAINER_WIDTH = 500;
-const CONTAINER_HEIGHT = 800;
+const CONTAINER_WIDTH = 375;
+const CONTAINER_HEIGHT = 650;
 
 // presets
 const photoPresets = {
-    'bus': {
-        path: 'images/bus.png',
-        originalWidth: 960,
-        originalHeight: 720,
-        radius: 20
-    },
     'coffee': {
         path: 'images/coffee.png',
         originalWidth: 960,
         originalHeight: 720,
-        radius: 40
+        radius: 15
+    },
+    'bus': {
+        path: 'images/bus.png',
+        originalWidth: 960,
+        originalHeight: 720,
+        radius: 25
     },
     'stock': {
         path: 'images/samsung.png',
         originalWidth: 960,
         originalHeight: 720,
-        radius: 180
+        radius: 45
     }
 };
 
@@ -135,4 +135,31 @@ Events.on(engine, 'afterUpdate', () => {
 
         div.style.transform = `translate(${cssX}px, ${cssY}px) rotate(${angle}rad)`;
     }
+});
+
+// 나중에 버블 애니메이션 / 계산 로직 / 목표 달성 트리거 등을
+// 여기에서 구현하면 됨.
+
+// 예시: 개발용으로 모달 열고 닫는 간단한 헬퍼 (원하면 지워도 됨)
+document.addEventListener("DOMContentLoaded", () => {
+  const celebrateModal = document.querySelector(".goal-modal-celebrate");
+  const savingModal = document.querySelector(".goal-modal-saving");
+  const closes = document.querySelectorAll(".goal-modal-close");
+
+  // 필요하면 콘솔에서 아래처럼 테스트 가능:
+  // openCelebrate(), openSaving();
+
+  window.openCelebrate = () => {
+    celebrateModal.classList.add("is-open");
+  };
+  window.openSaving = () => {
+    savingModal.classList.add("is-open");
+  };
+
+  closes.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      celebrateModal.classList.remove("is-open");
+      savingModal.classList.remove("is-open");
+    });
+  });
 });
