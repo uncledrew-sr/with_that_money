@@ -36,8 +36,7 @@
       <!-- 목표형 화면 텍스트 (CSS에서 토글) -->
       <p class="hint-text hint-goal">위시리스트 입력하기</p>
     </section>
-
-    <!-- 금액 입력(처럼 보이는) 캡슐 -->
+    <!-- 입력 캡슐 -->
     <section class="amount-section">
       <div class="amount-pill">
         <div class="amount-value">29,050 원</div>
@@ -46,35 +45,35 @@
         </button>
       </div>
     </section>
-
-    <!-- 카테고리 칩 -->
+    <!-- 카테고리 캐러셀 섹션 -->
     <section class="category-section">
-      <div class="category-scroll">
-        <button class="chip chip-active">아메리카노</button>
-        <button class="chip">택시</button>
-        <button class="chip">햄버거</button>
-        <button class="chip">피자</button>
-        <button class="chip chip-more" aria-label="더 보기">
-          <span class="chip-more-icon">›</span>
+      <div class="category-carousel">
+        <!-- 왼쪽 화살표 -->
+        <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="왼쪽으로">
+          ‹
+        </button>
+        <!-- 가운데 스크롤 레일 -->
+        <div class="category-scroll" id="category-track"></div>
+        <!-- 오른쪽 화살표 -->
+        <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="오른쪽으로">
+          ›
         </button>
       </div>
     </section>
-
-    <!-- 버블 + 아메리카노 잔수 카드 섹션 -->
     <section class="bubble-section">
       <div class="bubble-wrapper">
-        <!-- 위에 올라오는 아메리카노 잔수 카드 -->
         <div class="summary-card summary-card-over-bubble">
           <div class="summary-left">
-            <div class="summary-icon">☕️</div>
+            <div class="summary-icon">
+              <span class="summary-icon-emoji">☕️</span>
+            </div>
             <p class="summary-text">
-              아메리카노 기준
-              <a href="#" class="summary-amount-link">3잔</a> <!-- 3잔 / 8.3잔 등 상태에 따라 변경 -->
+              <span class="summary-label">아메리카노 기준</span>
+              <a href="#" class="summary-amount-link">8.3잔</a>
             </p>
           </div>
-          <div class="summary-right">기준가: 3,500원</div>
+          <div class="summary-right">기준가 : 4,500원</div>
         </div>
-
         <!-- 아래쪽 버블 액팅 들어갈 영역 -->
         <div class="bubble-placeholder">
           <!-- 여기 나중에 버블 애니메이션/캔버스/DOM 들어가면 됨 -->
@@ -82,8 +81,6 @@
         </div>
       </div>
     </section>
-
-
     <!-- 광고 카드 -->
     <section class="ad-section">
       <div class="ad-card">
@@ -91,7 +88,6 @@
           <span class="ad-label-title">광고</span>
           <span class="ad-label-pill">AD</span>
         </div>
-
         <div class="ad-content">
           <div class="ad-thumb">
             <!-- 썸네일 이미지 필요하면 <img> 넣기 -->
