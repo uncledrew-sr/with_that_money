@@ -89,10 +89,8 @@
           </div>
           <div class="summary-right">기준가 : 4,500원</div>
         </div>
-        <!-- 아래쪽 버블 액팅 들어갈 영역 -->
-        <div class="bubble-placeholder">
-          <!-- 여기 나중에 버블 애니메이션/캔버스/DOM 들어가면 됨 -->
-          <span class="bubble-placeholder-text">버블 영역 (나중에 애니메이션)</span>
+        <div class="bubble-area">
+          <div id="bubble-container" class="bubble-container"></div>
         </div>
       </div>
     </section>
@@ -146,7 +144,7 @@
       </div>
     </section>
   </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
