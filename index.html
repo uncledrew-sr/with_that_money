@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <!-- mode-basic = 경험형 사용자 / mode-goal = 목표형 사용자 -->
-<body class="mode-basic">
+<body class="mode-goal">
   <div class="app">
     <header class="app-header">
       <div class="app-header-left">
@@ -110,6 +110,63 @@
             <p class="ad-brand">나이키</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="wishlist-modal" aria-hidden="true">
+      <div class="wishlist-modal-card">
+        <button
+          class="wishlist-modal-close"
+          type="button"
+          aria-label="닫기"
+        >
+          ×
+        </button>
+
+        <header class="wishlist-modal-header">
+          <span class="wishlist-lock">🔒</span>
+          <h2 class="wishlist-title">위시리스트</h2>
+        </header>
+
+        <form class="wishlist-form" novalidate>
+          <div class="wishlist-field">
+            <label for="wish-name">상품명</label>
+            <input
+              id="wish-name"
+              type="text"
+              maxlength="20"
+              placeholder="상품명을 입력해주세요 (ex. 아이패드, 에어팟 프로2)"
+            />
+            <p class="wishlist-error wishlist-error-name"></p>
+          </div>
+
+          <div class="wishlist-field">
+            <label for="wish-price">가격</label>
+            <input
+              id="wish-price"
+              type="text"
+              inputmode="numeric"
+              placeholder="상품의 가격을 입력해주세요 (원화)"
+            />
+          </div>
+
+          <div class="wishlist-field">
+            <label for="wish-url">URL</label>
+            <input
+              id="wish-url"
+              type="url"
+              placeholder="상품을 구매할 수 있는 링크를 입력해주세요"
+            />
+          </div>
+
+          <button
+            class="wishlist-submit"
+            type="submit"
+            disabled
+          >
+            위시리스트 저장하기
+          </button>
+        </form>
       </div>
     </section>
 
