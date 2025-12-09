@@ -179,16 +179,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!bubbleContainer || typeof Matter === "undefined") return;
     if (bubbleEngine) return;
 
-    const { Engine, Runner, Bodies, World, Events } = Matter;
+    const { Engine, Runner, Bodies, World, Events, Body } = Matter;
 
     const width = bubbleContainer.clientWidth || 340;
     const height = bubbleContainer.clientHeight || 260;
 
     bubbleEngine = Engine.create();
     bubbleWorld = bubbleEngine.world;
-    bubbleWorld.gravity.y = 0.25;
+    bubbleWorld.gravity.y = 0.3; // 0.25, 0.3
 
-    const wallOptions = { isStatic: true, render: { visible: false } };
+    const wallOptions = { 
+      isStatic: true, render: { visible: false },
+      restitution: 0.9,
+      friction: 0, 
+    };
     const wallThickness = 40;
 
     const ground = Bodies.rectangle(
@@ -224,8 +228,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!div) return;
         const r = body.circleRadius;
         const { x, y } = body.position;
-        div.style.transform = `translate(${x - r}px, ${y - r}px)`;
-      });
+
+        const angleDeg = (body.angle * 180) / Math.PI;
+        div.style.transform =
+          `translate(${x - r}px, ${y - r}px) rotate(${angleDeg}deg)`;
+        });
     });
   }
 
@@ -277,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     clearBubbles();
 
-    const { Bodies, World } = Matter;
+    const { Bodies, World, Body } = Matter;
     const width = bubbleContainer.clientWidth || 340;
     const height = bubbleContainer.clientHeight || 260;
 
@@ -288,12 +295,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < N; i++) {
       const x = Math.random() * (width * 0.8) + width * 0.1;
-      const y = -Math.random() * 200;
+      const y = -Math.random() * 260;
 
       const body = Bodies.circle(x, y, radius, {
-        restitution: 0.4,
+        restitution: 0.7,
         friction: 0.05,
+        frictionAir: 0.0,
       });
+
+      Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.4);
+
       matterBubbles.push(body);
 
       const div = document.createElement("div");
