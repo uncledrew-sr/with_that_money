@@ -1,207 +1,217 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js">
-<head>
-  <meta charset="UTF-8" />
-  <title>가치계산기</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<!-- mode-basic = 경험형 사용자 / mode-goal = 목표형 사용자 -->
-<body class="mode-goal">
-  <div class="app">
-    <header class="app-header">
-      <div class="app-header-left">
-        <div class="app-icon">
-          <img
-            src="./images/value-icon.png"
-            alt="icon"
-            class="app-icon-img"
-          />
+    <head>
+        <meta charset="UTF-8" />
+        <title>가치계산기</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body class="mode-basic">
+        <div class="app">
+            <header class="app-header">
+                <div class="app-header-left">
+                    <div class="app-icon">
+                        <img
+                            src="./images/value-icon.png"
+                            alt="icon"
+                            class="app-icon-img"
+                        />
+                    </div>
+                    <span class="app-title">가치계산기</span>
+                </div>
+                <button class="wishlist-edit">위시리스트 수정하기</button>
+            </header>
+
+            <section class="goal-progress">
+                <div class="goal-progress-top">
+                    <span class="goal-progress-label">52% 달성</span>
+                    <span class="goal-progress-target">에어팟 프로2</span>
+                </div>
+                <div class="goal-progress-bar">
+                    <div class="goal-progress-fill" style="width:52%"></div>
+                </div>
+            </section>
+
+            <section class="hint-banner">
+                <p class="hint-text hint-basic">로그인하고 위시리스트 입력하기</p>
+                <p class="hint-text hint-goal">위시리스트 입력하기</p>
+            </section>
+
+            <section class="amount-section">
+                <div class="amount-pill">
+                    <input
+                        class="amount-input"
+                        type="text"
+                        inputmode="numeric"
+                        placeholder="100,000 원"
+                        aria-label="금액 입력"
+                    />
+                    <button
+                        class="amount-equal-btn is-disabled"
+                        type="button"
+                        aria-label="계산하기"
+                        disabled
+                    >
+                        <span class="equal-icon">=</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="category-section">
+                <div class="category-carousel">
+                    <button
+                        class="carousel-arrow carousel-arrow-left"
+                        type="button"
+                        aria-label="왼쪽으로"
+                    >
+                        ‹
+                    </button>
+                    <div class="category-scroll" id="category-track"></div>
+                    <button
+                        class="carousel-arrow carousel-arrow-right"
+                        type="button"
+                        aria-label="오른쪽으로"
+                    >
+                        ›
+                    </button>
+                </div>
+            </section>
+
+            <section class="bubble-section">
+                <div class="bubble-wrapper">
+                    <div class="summary-card summary-card-over-bubble">
+                        <div class="summary-left">
+                            <div class="summary-icon">
+                                <span class="summary-icon-emoji">☕️</span>
+                            </div>
+                            <p class="summary-text">
+                                <span class="summary-label">아메리카노 기준</span>
+                                <a href="#" class="summary-amount-link">8.3잔</a>
+                            </p>
+                        </div>
+                        <div class="summary-right">기준가 : 4,500원</div>
+                    </div>
+                    <div class="bubble-area">
+                        <div id="bubble-container" class="bubble-container"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ad-section">
+                <div class="ad-card">
+                    <div class="ad-label-row">
+                        <span class="ad-label-title">광고</span>
+                        <span class="ad-label-pill">AD</span>
+                    </div>
+                    <div class="ad-content">
+                        <div class="ad-thumb"></div>
+                        <div class="ad-text">
+                            <p class="ad-title">나이키로 완성하는 데일리무드</p>
+                            <p class="ad-brand">나이키</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="wishlist-modal" aria-hidden="true">
+                <div class="wishlist-modal-card">
+                    <button
+                        class="wishlist-modal-close"
+                        type="button"
+                        aria-label="닫기"
+                    >
+                        ×
+                    </button>
+
+                    <header class="wishlist-modal-header">
+                        <span class="wishlist-lock">🔒</span>
+                        <h2 class="wishlist-title">위시리스트</h2>
+                    </header>
+
+                    <form class="wishlist-form" novalidate>
+                        <div class="wishlist-field">
+                            <label for="wish-name">상품명</label>
+                            <input
+                                id="wish-name"
+                                type="text"
+                                maxlength="20"
+                                placeholder="상품명을 입력해주세요 (ex. 아이패드, 에어팟 프로2)"
+                            />
+                            <p class="wishlist-error wishlist-error-name"></p>
+                        </div>
+
+                        <div class="wishlist-field">
+                            <label for="wish-price">가격</label>
+                            <input
+                                id="wish-price"
+                                type="text"
+                                inputmode="numeric"
+                                placeholder="상품의 가격을 입력해주세요 (원화)"
+                            />
+                        </div>
+
+                        <div class="wishlist-field">
+                            <label for="wish-url">URL</label>
+                            <input
+                                id="wish-url"
+                                type="url"
+                                placeholder="상품을 구매할 수 있는 링크를 입력해주세요"
+                            />
+                        </div>
+
+                        <button
+                            class="wishlist-submit"
+                            type="submit"
+                            disabled
+                        >
+                            위시리스트 저장하기
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="goal-modal goal-modal-celebrate" aria-hidden="true">
+                <div class="goal-modal-card">
+                    <button
+                        class="goal-modal-close"
+                        type="button"
+                        aria-label="닫기"
+                    >
+                        ×
+                    </button>
+                    <div class="goal-modal-emoji">🎉</div>
+                    <p class="goal-modal-title">
+                        축하합니다!<br />
+                        ‘에어팟 프로 2’<br />
+                        구매할 돈이 모였어요
+                    </p>
+                    <p class="goal-modal-sub">누적 금액 : 500,000</p>
+                    <button class="goal-modal-cta" type="button">사러가기</button>
+                </div>
+            </section>
+
+            <section class="goal-modal goal-modal-saving" aria-hidden="true">
+                <div class="goal-modal-card">
+                    <button
+                        class="goal-modal-close"
+                        type="button"
+                        aria-label="닫기"
+                    >
+                        ×
+                    </button>
+                    <p class="goal-modal-reset">누적 금액 초기화 하기</p>
+                    <div class="goal-modal-emoji">💸</div>
+                    <p class="goal-modal-title">
+                        329,950원만 모으면<br />
+                        ‘에어팟 프로 2’가 내 손에!
+                    </p>
+                    <p class="goal-modal-sub">현재 누적 금액 : 140,000</p>
+                    <p class="goal-modal-big-amount">29,050원</p>
+                    <button class="goal-modal-cta" type="button">모으기</button>
+                </div>
+            </section>
         </div>
-        <span class="app-title">가치계산기</span>
-      </div>
-      <!-- 목표형 -->
-      <button class="wishlist-edit">위시리스트 수정하기</button>
-    </header>
-    <!-- 목표형 : 진행 모달 -->
-    <section class="goal-progress">
-      <div class="goal-progress-top">
-        <span class="goal-progress-label">52% 달성</span>
-        <span class="goal-progress-target">에어팟 프로2</span>
-      </div>
-      <div class="goal-progress-bar">
-        <div class="goal-progress-fill" style="width:52%"></div>
-      </div>
-    </section>
-    <!-- 로그인 / 위시리스트 안내 배너 -->
-    <section class="hint-banner">
-      <!-- 기본 화면 텍스트 -->
-      <p class="hint-text hint-basic">로그인하고 위시리스트 입력하기</p>
-      <!-- 목표형 화면 텍스트 (CSS에서 토글) -->
-      <p class="hint-text hint-goal">위시리스트 입력하기</p>
-    </section>
-    <!-- 입력 캡슐 -->
-    <section class="amount-section">
-      <div class="amount-pill">
-        <input
-          class="amount-input"
-          type="text"
-          inputmode="numeric"
-          placeholder="10,000 원"
-          aria-label="금액 입력"
-        />
-        <button
-          class="amount-equal-btn is-disabled"
-          type="button"
-          aria-label="계산하기"
-          disabled
-        >
-          <span class="equal-icon">=</span>
-        </button>
-      </div>
-    </section>
-    <!-- 카테고리 캐러셀 섹션 -->
-    <section class="category-section">
-      <div class="category-carousel">
-        <!-- 왼쪽 화살표 -->
-        <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="왼쪽으로">
-          ‹
-        </button>
-        <!-- 가운데 스크롤 레일 -->
-        <div class="category-scroll" id="category-track"></div>
-        <!-- 오른쪽 화살표 -->
-        <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="오른쪽으로">
-          ›
-        </button>
-      </div>
-    </section>
-    <section class="bubble-section">
-      <div class="bubble-wrapper">
-        <div class="summary-card summary-card-over-bubble">
-          <div class="summary-left">
-            <div class="summary-icon">
-              <span class="summary-icon-emoji">☕️</span>
-            </div>
-            <p class="summary-text">
-              <span class="summary-label">아메리카노 기준</span>
-              <a href="#" class="summary-amount-link">8.3잔</a>
-            </p>
-          </div>
-          <div class="summary-right">기준가 : 4,500원</div>
-        </div>
-        <div class="bubble-area">
-          <div id="bubble-container" class="bubble-container"></div>
-        </div>
-      </div>
-    </section>
-    <!-- 광고 카드 -->
-    <section class="ad-section">
-      <div class="ad-card">
-        <div class="ad-label-row">
-          <span class="ad-label-title">광고</span>
-          <span class="ad-label-pill">AD</span>
-        </div>
-        <div class="ad-content">
-          <div class="ad-thumb">
-            <!-- 썸네일 이미지 필요하면 <img> 넣기 -->
-          </div>
-          <div class="ad-text">
-            <p class="ad-title">나이키로 완성하는 데일리무드</p>
-            <p class="ad-brand">나이키</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="wishlist-modal" aria-hidden="true">
-      <div class="wishlist-modal-card">
-        <button
-          class="wishlist-modal-close"
-          type="button"
-          aria-label="닫기"
-        >
-          ×
-        </button>
-
-        <header class="wishlist-modal-header">
-          <span class="wishlist-lock">🔒</span>
-          <h2 class="wishlist-title">위시리스트</h2>
-        </header>
-
-        <form class="wishlist-form" novalidate>
-          <div class="wishlist-field">
-            <label for="wish-name">상품명</label>
-            <input
-              id="wish-name"
-              type="text"
-              maxlength="20"
-              placeholder="상품명을 입력해주세요 (ex. 아이패드, 에어팟 프로2)"
-            />
-            <p class="wishlist-error wishlist-error-name"></p>
-          </div>
-
-          <div class="wishlist-field">
-            <label for="wish-price">가격</label>
-            <input
-              id="wish-price"
-              type="text"
-              inputmode="numeric"
-              placeholder="상품의 가격을 입력해주세요 (원화)"
-            />
-          </div>
-
-          <div class="wishlist-field">
-            <label for="wish-url">URL</label>
-            <input
-              id="wish-url"
-              type="url"
-              placeholder="상품을 구매할 수 있는 링크를 입력해주세요"
-            />
-          </div>
-
-          <button
-            class="wishlist-submit"
-            type="submit"
-            disabled
-          >
-            위시리스트 저장하기
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ======= 목표 달성 축하 모달 (목표 달성시.png) ======= -->
-    <section class="goal-modal goal-modal-celebrate" aria-hidden="true">
-      <div class="goal-modal-card">
-        <button class="goal-modal-close" type="button" aria-label="닫기">×</button>
-        <div class="goal-modal-emoji">🎉</div>
-        <p class="goal-modal-title">
-          축하합니다!<br />
-          ‘에어팟 프로 2’<br />
-          구매할 돈이 모였어요
-        </p>
-        <p class="goal-modal-sub">누적 금액 : 500,000</p>
-        <button class="goal-modal-cta" type="button">사러가기</button>
-      </div>
-    </section>
-
-    <!-- ======= 누적 금액 안내 모달 (애니메이션 후 모달.png) ======= -->
-    <section class="goal-modal goal-modal-saving" aria-hidden="true">
-      <div class="goal-modal-card">
-        <button class="goal-modal-close" type="button" aria-label="닫기">×</button>
-        <p class="goal-modal-reset">누적 금액 초기화 하기</p>
-        <div class="goal-modal-emoji">💸</div>
-        <p class="goal-modal-title">
-          329,950원만 모으면<br />
-          ‘에어팟 프로 2’가 내 손에!
-        </p>
-        <p class="goal-modal-sub">현재 누적 금액 : 140,000</p>
-        <p class="goal-modal-big-amount">29,050원</p>
-        <button class="goal-modal-cta" type="button">모으기</button>
-      </div>
-    </section>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
-  <script src="script.js"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
