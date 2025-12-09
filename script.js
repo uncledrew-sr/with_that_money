@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: "coffee", label: "커피",   price: 4500,  icon: "☕️", unit: "잔" },
     { id: "taxi",   label: "택시",   price: 4800,  icon: "🚕", unit: "번" },
     { id: "burger", label: "햄버거", price: 5500,  icon: "🍔", unit: "개" },
-    { id: "gukbap", label: "국밥",   price: 10000, icon: "🍲", unit: "그릇" },
+    { id: "gukbab", label: "국밥",   price: 10000, icon: "🍲", unit: "그릇" },
     { id: "heart",  label: "하트",   price: null,  icon: "❤️", unit: "" }, // no limit
   ];
 
@@ -166,14 +166,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const bubblePresets = {
     coffee: { img: "images/coffee.png" },
     taxi:   { img: "images/taxi.png" },
-    burger: { img: "images/burger.png" },
-    gukbap: { img: "images/soup.png" },
-    heart:  { img: "images/heart.jpeg" },
+    burger: { img: "images/hamburger.png" },
+    gukbab: { img: "images/gukbab.png" },
+    heart:  { img: "images/heart.png" },
   };
 
   const BUBBLE_MIN_RADIUS = 16; // 가장 싼 카테고리
   const BUBBLE_MAX_RADIUS = 40; // 가장 비싼 카테고리
-  const BUBBLE_DENSITY = 0.4;  // 컨테이너 내에서 버블이 차지할 비율
+  const BUBBLE_DENSITY = 0.8;  // 컨테이너 내에서 버블이 차지할 비율
 
   function initBubbleEngine() {
     if (!bubbleContainer || typeof Matter === "undefined") return;
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bubbleEngine = Engine.create();
     bubbleWorld = bubbleEngine.world;
-    bubbleWorld.gravity.y = 0.8;
+    bubbleWorld.gravity.y = 0.25;
 
     const wallOptions = { isStatic: true, render: { visible: false } };
     const wallThickness = 40;
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalBubbleArea = containerArea * BUBBLE_DENSITY;
     const perBubbleArea = Math.PI * radius * radius;
     let count = Math.floor(totalBubbleArea / perBubbleArea);
-    count = Math.max(8, Math.min(count, 80)); // 최소/최대 갯수 클램프
+    count = Math.max(8, Math.min(count, 120)); // 최소/최대 갯수 클램프
 
     return { radius, count };
   }
