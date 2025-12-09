@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ============== 모달 ============== */
+  /* ============== 모달 (목표 달성/안내) ============== */
   const celebrateModal = document.querySelector(".goal-modal-celebrate");
   const savingModal = document.querySelector(".goal-modal-saving");
   const closes = document.querySelectorAll(".goal-modal-close");
@@ -18,12 +18,192 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  /* ============== 위시리스트 수정 모달 & 목표 진행바 ============== */
+
+  const wishlistEditBtn = document.querySelector(".wishlist-edit");
+  const wishlistModal = document.querySelector(".wishlist-modal");
+  const wishlistCloseBtn = wishlistModal
+    ? wishlistModal.querySelector(".wishlist-modal-close")
+    : null;
+  const wishlistForm = wishlistModal
+    ? wishlistModal.querySelector(".wishlist-form")
+    : null;
+  const wishNameInput = wishlistModal
+    ? wishlistModal.querySelector("#wish-name")
+    : null;
+  const wishPriceInput = wishlistModal
+    ? wishlistModal.querySelector("#wish-price")
+    : null;
+  const wishUrlInput = wishlistModal
+    ? wishlistModal.querySelector("#wish-url")
+    : null;
+  const wishSaveBtn = wishlistModal
+    ? wishlistModal.querySelector(".wishlist-submit")
+    : null;
+  const wishNameErrorEl = wishlistModal
+    ? wishlistModal.querySelector(".wishlist-error-name")
+    : null;
+
+  const goalLabelEl = document.querySelector(".goal-progress-label");
+  const goalTargetEl = document.querySelector(".goal-progress-target");
+  const goalFillEl = document.querySelector(".goal-progress-fill");
+
+  // 위시리스트/누적금액 상태 (추후 실제 데이터와 연결하면 됨)
+  let wishlist = null;
+  let savedAmount = 0;
+
+  function setWishlistButtonLabel() {
+    if (!wishlistEditBtn) return;
+    wishlistEditBtn.textContent = wishlist
+      ? "위시리스트 수정하기"
+      : "위시리스트 입력하기";
+  }
+
+  function openWishlistModal() {
+    if (!wishlistModal) return;
+    wishlistModal.classList.add("is-open");
+
+    // 기존 값 있으면 폼에 채워주기
+    if (wishlist && wishNameInput && wishPriceInput && wishUrlInput) {
+      wishNameInput.value = wishlist.name;
+      wishPriceInput.value = wishlist.price
+        ? `${formatNumber(wishlist.price)}원`
+        : "";
+      wishUrlInput.value = wishlist.url || "";
+    }
+    validateWishlistForm(false);
+  }
+
+  function closeWishlistModal() {
+    if (!wishlistModal) return;
+    wishlistModal.classList.remove("is-open");
+  }
+
+  function updateGoalProgress() {
+    if (!wishlist) return;
+    const targetPrice = wishlist.price;
+    const ratio =
+      targetPrice && targetPrice > 0
+        ? Math.min(savedAmount / targetPrice, 1)
+        : 0;
+    const percent = Math.round(ratio * 100);
+
+    if (goalLabelEl) goalLabelEl.textContent = `${percent}% 달성`;
+    if (goalTargetEl) goalTargetEl.textContent = wishlist.name;
+    if (goalFillEl) goalFillEl.style.width = `${percent}%`;
+
+    // 목표형 화면 노출
+    document.body.classList.add("mode-goal");
+  }
+
+  // 위시리스트 폼 유효성 검사 (상품명 10자 이하 + 세 필드 모두 입력)
+  function validateWishlistForm(showMessage = true) {
+    if (!wishNameInput || !wishPriceInput || !wishSaveBtn) return false;
+
+    const name = wishNameInput.value.trim();
+    const priceStr = wishPriceInput.value.replace(/[^0-9]/g, "");
+    const urlFilled = !!(wishUrlInput && wishUrlInput.value.trim());
+
+    let valid = true;
+
+    // 에러 상태 초기화
+    const nameField = wishNameInput.closest(".wishlist-field");
+    if (nameField) nameField.classList.remove("is-error");
+    if (wishNameErrorEl) wishNameErrorEl.textContent = "";
+
+    if (!name) {
+      valid = false;
+    } else if (name.length > 10) {
+      valid = false;
+      if (showMessage && wishNameErrorEl) {
+        wishNameErrorEl.textContent = "상품명은 10자 이하여야 합니다.";
+      }
+      if (nameField) nameField.classList.add("is-error");
+    }
+
+    if (!priceStr) valid = false;
+    if (!urlFilled) valid = false;
+
+    const canSubmit = valid;
+    wishSaveBtn.disabled = !canSubmit;
+    wishSaveBtn.classList.toggle("is-active", canSubmit);
+
+    return canSubmit;
+  }
+
+  // 버튼 클릭 → 모달 오픈
+  if (wishlistEditBtn && wishlistModal) {
+    setWishlistButtonLabel();
+    wishlistEditBtn.addEventListener("click", openWishlistModal);
+  }
+
+  // X 버튼 / 오버레이 클릭 → 모달 닫기
+  if (wishlistCloseBtn) {
+    wishlistCloseBtn.addEventListener("click", closeWishlistModal);
+  }
+  if (wishlistModal) {
+    wishlistModal.addEventListener("click", (e) => {
+      if (e.target === wishlistModal) closeWishlistModal();
+    });
+  }
+
+  // 인풋 입력 시 버튼 활성 상태 갱신
+  [wishNameInput, wishPriceInput, wishUrlInput].forEach((input) => {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      if (input === wishPriceInput) {
+        const raw = wishPriceInput.value.replace(/[^0-9]/g, "");
+        wishPriceInput.value = raw;
+      }
+      validateWishlistForm(false);
+    });
+  });
+
+  // 가격 인풋 blur 시 529,000원 형식으로 포맷
+  if (wishPriceInput) {
+    wishPriceInput.addEventListener("blur", () => {
+      const num = parseInt(
+        wishPriceInput.value.replace(/[^0-9]/g, ""),
+        10
+      );
+      if (!Number.isNaN(num) && num > 0) {
+        wishPriceInput.value = `${formatNumber(num)}원`;
+      } else {
+        wishPriceInput.value = "";
+      }
+      validateWishlistForm(false);
+    });
+  }
+
+  // 폼 submit → 위시리스트 저장 + 진행바 갱신
+  if (wishlistForm) {
+    wishlistForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const ok = validateWishlistForm(true);
+      if (!ok) return;
+
+      const name = wishNameInput.value.trim();
+      const price = parseInt(
+        wishPriceInput.value.replace(/[^0-9]/g, ""),
+        10
+      );
+      const url = wishUrlInput ? wishUrlInput.value.trim() : "";
+
+      wishlist = { name, price, url };
+      setWishlistButtonLabel();
+      updateGoalProgress();
+      closeWishlistModal();
+    });
+  }
+
+  /* ============== 카테고리 / 요약 / 입력 로직 ============== */
+
   const BASE_CATEGORIES = [
-    { id: "coffee", label: "커피",   price: 4500,  icon: "☕️", unit: "잔" },
-    { id: "taxi",   label: "택시",   price: 4800,  icon: "🚕", unit: "번" },
-    { id: "burger", label: "햄버거", price: 5500,  icon: "🍔", unit: "개" },
-    { id: "gukbab", label: "국밥",   price: 10000, icon: "🍲", unit: "그릇" },
-    { id: "heart",  label: "하트",   price: null,  icon: "❤️", unit: "" }, // no limit
+    { id: "coffee", label: "커피", price: 4500, icon: "☕️", unit: "잔" },
+    { id: "taxi", label: "택시", price: 4800, icon: "🚕", unit: "번" },
+    { id: "burger", label: "햄버거", price: 5500, icon: "🍔", unit: "개" },
+    { id: "gukbab", label: "국밥", price: 10000, icon: "🍲", unit: "그릇" },
+    { id: "heart", label: "하트", price: null, icon: "❤️", unit: "" }, // no limit
   ];
 
   let customCategories = []; // 최대 3개
@@ -91,7 +271,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateSummaryCard() {
     const cat = getCategoryById(currentCategoryId);
-    if (!cat || !summaryLabelEl || !summaryAmountLinkEl || !summaryRightEl) return;
+    if (!cat || !summaryLabelEl || !summaryAmountLinkEl || !summaryRightEl)
+      return;
 
     const amount = getCurrentAmount();
 
@@ -165,15 +346,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // 카테고리별 이미지 (원하면 경로 바꿔)
   const bubblePresets = {
     coffee: { img: "images/coffee.png" },
-    taxi:   { img: "images/taxi.png" },
+    taxi: { img: "images/taxi.png" },
     burger: { img: "images/hamburger.png" },
     gukbab: { img: "images/gukbab.png" },
-    heart:  { img: "images/heart.png" },
+    heart: { img: "images/heart.png" },
   };
 
   const BUBBLE_MIN_RADIUS = 16; // 가장 싼 카테고리
   const BUBBLE_MAX_RADIUS = 40; // 가장 비싼 카테고리
-  const BUBBLE_DENSITY = 0.8;  // 컨테이너 내에서 버블이 차지할 비율
+  const BUBBLE_DENSITY = 0.8; // 컨테이너 내에서 버블이 차지할 비율
 
   function initBubbleEngine() {
     if (!bubbleContainer || typeof Matter === "undefined") return;
@@ -188,10 +369,11 @@ document.addEventListener("DOMContentLoaded", () => {
     bubbleWorld = bubbleEngine.world;
     bubbleWorld.gravity.y = 0.3; // 0.25, 0.3
 
-    const wallOptions = { 
-      isStatic: true, render: { visible: false },
+    const wallOptions = {
+      isStatic: true,
+      render: { visible: false },
       restitution: 0.9,
-      friction: 0, 
+      friction: 0,
     };
     const wallThickness = 40;
 
@@ -232,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const angleDeg = (body.angle * 180) / Math.PI;
         div.style.transform =
           `translate(${x - r}px, ${y - r}px) rotate(${angleDeg}deg)`;
-        });
+      });
     });
   }
 
