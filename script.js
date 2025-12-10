@@ -6,17 +6,53 @@ document.addEventListener("DOMContentLoaded", () => {
     window.openCelebrate = () => {
         if (celebrateModal) celebrateModal.classList.add("is-open");
     };
-
     window.openSaving = () => {
         if (savingModal) savingModal.classList.add("is-open");
     };
-
     closes.forEach((btn) => {
         btn.addEventListener("click", () => {
             if (celebrateModal) celebrateModal.classList.remove("is-open");
             if (savingModal) savingModal.classList.remove("is-open");
         });
     });
+
+    const BUBBLE_PRESETS = {
+        coffee: {
+            label: "커피",
+            price: 4500,
+            unit: "잔",
+            img: "images/coffee.png"
+        },
+        taxi: {
+            label: "택시",
+            price: 4800,
+            unit: "번",
+            img: "images/taxi.png"
+        },
+        burger: {
+            label: "햄버거",
+            price: 5500,
+            unit: "개",
+            img: "images/hamburger.png"
+        },
+        gukbab: {
+            label: "국밥",
+            price: 10000,
+            unit: "그릇",
+            img: "images/gukbab.png"
+        },
+        heart: {
+            label: "하트",
+            price: null,
+            unit: "",
+            img: "images/heart.png"
+        }
+    };
+
+    function getPreset(id) {
+        return BUBBLE_PRESETS[id] || BUBBLE_PRESETS.coffee;
+    }
+
 
     const wishlistEditBtn = document.querySelector(".wishlist-edit");
     const wishlistModal = document.querySelector(".wishlist-modal");
@@ -221,13 +257,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const BASE_CATEGORIES = [
-        { id: "coffee", label: "커피", price: 4500, icon: "☕️", unit: "잔" },
-        { id: "taxi", label: "택시", price: 4800, icon: "🚕", unit: "번" },
-        { id: "burger", label: "햄버거", price: 5500, icon: "🍔", unit: "개" },
-        { id: "gukbab", label: "국밥", price: 10000, icon: "🍲", unit: "그릇" },
-        { id: "heart", label: "하트", price: null, icon: "❤️", unit: "" }
-    ];
+    const BASE_CATEGORIES = Object.entries(BUBBLE_PRESETS).map(([id, p]) => ({
+        id,
+        label: p.label,
+        price: p.price,
+        unit: p.unit
+    }));
+
 
     let customCategories = [];
     let currentCategoryId = "coffee";
@@ -241,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const summaryLabelEl = document.querySelector(".summary-label");
     const summaryAmountLinkEl = document.querySelector(".summary-amount-link");
     const summaryRightEl = document.querySelector(".summary-right");
-    const summaryIconEmojiEl = document.querySelector(".summary-icon-emoji");
+    const summaryIconImgEl = document.querySelector(".summary-icon-img");
 
     const SCROLL_AMOUNT = 140;
     const DEFAULT_AMOUNT = 100000;
@@ -295,6 +331,35 @@ document.addEventListener("DOMContentLoaded", () => {
         return Number.isNaN(num) ? DEFAULT_AMOUNT : num;
     }
 
+    function getBubbleCount(cat) {
+        const amount = getCurrentAmount();
+
+        if (!cat.price || amount <= 0) return 0;
+
+        let n = Math.floor(amount / cat.price);
+
+        if (n < 1) n = 1;
+        if (n > 80) n = 80;
+
+        return n;
+    }
+
+    function getBubbleRadius(count) {
+        if (!bubbleContainer || count <= 0) return BUBBLE_MIN_RADIUS;
+
+        const width = bubbleContainer.clientWidth || 340;
+        const height = bubbleContainer.clientHeight || 260;
+        const containerArea = width * height;
+
+        const totalBubbleArea = containerArea * BUBBLE_FILL_RATIO;
+        const perBubbleArea = totalBubbleArea / count;
+
+        let radius = Math.sqrt(perBubbleArea / Math.PI);
+
+        radius = Math.max(BUBBLE_MIN_RADIUS, Math.min(radius, BUBBLE_MAX_RADIUS));
+
+        return radius;
+    }
 
     function formatNumber(num) {
         return num.toLocaleString("ko-KR");
@@ -302,35 +367,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateSummaryCard() {
         const cat = getCategoryById(currentCategoryId);
-        if (!cat || !summaryLabelEl || !summaryAmountLinkEl || !summaryRightEl)
-            return;
+        if (!cat || !summaryLabelEl || !summaryAmountLinkEl || !summaryRightEl) return;
 
         const amount = getCurrentAmount();
+        const preset = getPreset(cat.id);
 
-        summaryLabelEl.textContent = `${cat.label} 기준`;
+        summaryLabelEl.textContent = preset.label;
 
-        if (summaryIconEmojiEl) {
-            summaryIconEmojiEl.textContent = cat.icon || "☕️";
+        if (summaryIconImgEl) {
+            summaryIconImgEl.src = preset.img;
+            summaryIconImgEl.alt = preset.label;
         }
 
-        if (cat.price && amount > 0) {
-            const n = amount / cat.price;
-            const unit = cat.unit || "개";
+        if (preset.price && amount > 0) {
+            const n = amount / preset.price;
+            const unit = preset.unit || "개";
             summaryAmountLinkEl.textContent = `${n.toFixed(1)}${unit}`;
-            summaryRightEl.textContent = `기준가: ${formatNumber(
-                cat.price
-            )}원`;
-        } else if (cat.price && amount === 0) {
-            const unit = cat.unit || "개";
+            summaryRightEl.textContent = `기준가: ${formatNumber(preset.price)}원`;
+        } else if (preset.price && amount === 0) {
+            const unit = preset.unit || "개";
             summaryAmountLinkEl.textContent = `0${unit}`;
-            summaryRightEl.textContent = `기준가: ${formatNumber(
-                cat.price
-            )}원`;
+            summaryRightEl.textContent = `기준가: ${formatNumber(preset.price)}원`;
         } else {
             summaryAmountLinkEl.textContent = "-";
             summaryRightEl.textContent = "기준가 없음";
         }
     }
+
 
     function updateEqualState() {
         if (!amountInput || !equalBtn) return;
@@ -372,19 +435,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let matterBubbles = [];
     let domBubbles = [];
 
-    const bubblePresets = {
-        coffee: { img: "images/coffee.png" },
-        taxi: { img: "images/taxi.png" },
-        burger: { img: "images/hamburger.png" },
-        gukbab: { img: "images/gukbab.png" },
-        heart: { img: "images/heart.png" }
-    };
-
-    const BUBBLE_MIN_RADIUS = 12;
-    const BUBBLE_MAX_RADIUS = 70;
-    const BUBBLE_DENSITY = 0.5; 
-
-    const FIXED_BUBBLE_COUNT = 40; // 30 ~ 50
+    const BUBBLE_MIN_RADIUS = 5;
+    const BUBBLE_MAX_RADIUS = 60;
+    const BUBBLE_FILL_RATIO = 1.0;
 
     function initBubbleEngine() {
         if (!bubbleContainer || typeof Matter === "undefined") return;
@@ -457,29 +510,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function priceToRadiusAndCount(cat) {
-        const width = bubbleContainer?.clientWidth || 340;
-        const height = bubbleContainer?.clientHeight || 260;
-        const containerArea = width * height;
-
-        const amount = getCurrentAmount();
-        let N = 1;
-        if (cat.price && amount > 0) {
-            N = Math.floor(amount / cat.price);
-            if (N < 1) N = 1;
-            if (N > 80) N = 80;
+        const N = getBubbleCount(cat);
+        if (N === 0) {
+            return { radius: BUBBLE_MIN_RADIUS, count: 0 };
         }
 
-        const totalBubbleArea = containerArea * BUBBLE_DENSITY;
-        const perBubbleArea = totalBubbleArea / N;
-
-        let radius = Math.sqrt(perBubbleArea / Math.PI);
-
-        radius = Math.max(BUBBLE_MIN_RADIUS, Math.min(radius, BUBBLE_MAX_RADIUS));
+        const radius = getBubbleRadius(N);
 
         console.log(
             "[BUBBLE]",
             cat.id,
-            "amount =", amount,
+            "amount =", getCurrentAmount(),
             "N =", N,
             "radius =", radius.toFixed(2)
         );
@@ -489,6 +530,8 @@ document.addEventListener("DOMContentLoaded", () => {
             count: N
         };
     }
+
+
 
     function updateBubbles() {
         if (!bubbleContainer || typeof Matter === "undefined") return;
@@ -504,7 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const width = bubbleContainer.clientWidth || 340;
         const height = bubbleContainer.clientHeight || 260;
 
-        const preset = bubblePresets[cat.id] || bubblePresets.coffee;
+        const preset = getPreset(cat.id);
         const imgPath = preset.img;
 
         const { radius, count: N } = priceToRadiusAndCount(cat);
