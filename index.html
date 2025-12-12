@@ -33,7 +33,9 @@
             </section>
 
             <section class="hint-banner">
-                <p class="hint-text hint-basic">로그인하고 위시리스트 입력하기</p>
+                <p class="hint-text hint-basic">
+                    <span id="btn-kakao-login" class="login-link">로그인</span>하고 위시리스트 입력하기
+                </p>
                 <p class="hint-text hint-goal">위시리스트 입력하기</p>
             </section>
 
@@ -45,6 +47,8 @@
                         inputmode="numeric"
                         placeholder="100,000 원"
                         aria-label="금액 입력"
+                        min="10000" 
+                        max="2000000"
                     />
                     <button
                         class="amount-equal-btn is-disabled"
@@ -55,6 +59,7 @@
                         <span class="equal-icon">=</span>
                     </button>
                 </div>
+                <p class="amount-error-msg"></p>
             </section>
 
             <section class="category-section">
@@ -82,21 +87,49 @@
                     <div class="summary-card summary-card-over-bubble">
                         <div class="summary-left">
                             <div class="summary-icon">
-                                <img
-                                    class="summary-icon-img"
-                                    src="images/coffee.png"
-                                    alt="커피"
-                                />
+                                <img class="summary-icon-img" src="images/coffee.png" alt="커피" />
                             </div>
                             <p class="summary-text">
                                 <span class="summary-label">아메리카노 기준</span>
-                                <a href="#" class="summary-amount-link">8.3잔</a>
+                                <a href="#" class="summary-amount-link">0.0잔</a>
                             </p>
                         </div>
                         <div class="summary-right">기준가 : 4,500원</div>
                     </div>
+
                     <div class="bubble-area">
                         <div id="bubble-container" class="bubble-container"></div>
+
+                        <div class="bubble-overlay overlay-saving" aria-hidden="true">
+                            <button class="overlay-close" type="button" aria-label="닫기">×</button>
+                            <button class="overlay-reset" type="button">누적 금액 초기화 하기</button>
+                            
+                            <div class="overlay-content">
+                                <div class="overlay-emoji">💸</div>
+                                <p class="overlay-title">
+                                    <span id="overlay-remain">329,950</span>원만 모으면<br />
+                                    ‘<span id="overlay-goal-name">에어팟 프로 2</span>’가 내 손에!
+                                </p>
+                                <p class="overlay-sub">현재 누적 금액 : <span id="overlay-saved">140,000</span></p>
+                                <p class="overlay-amount-big"><span id="overlay-add-amount">29,050</span>원</p>
+                                <button class="overlay-cta-btn" id="btn-save-confirm" type="button">모으기</button>
+                            </div>
+                        </div>
+
+                        <div class="bubble-overlay overlay-celebrate" aria-hidden="true">
+                            <button class="overlay-close" type="button" aria-label="닫기">×</button>
+                            
+                            <div class="overlay-content">
+                                <div class="overlay-emoji">🎉</div>
+                                <p class="overlay-title">
+                                    축하합니다!<br />
+                                    ‘<span id="celebrate-goal-name">에어팟 프로 2</span>’<br />
+                                    구매할 돈이 모였어요
+                                </p>
+                                <p class="overlay-sub">누적 금액 : <span id="celebrate-saved">500,000</span></p>
+                                <button class="overlay-cta-btn" id="btn-go-buy" type="button">사러가기</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -108,10 +141,12 @@
                         <span class="ad-label-pill">AD</span>
                     </div>
                     <div class="ad-content">
-                        <div class="ad-thumb"></div>
+                        <div class="ad-thumb">
+                            <img src="images/alphafly.png">
+                        </div>
                         <div class="ad-text">
-                            <p class="ad-title">나이키로 완성하는 데일리무드</p>
-                            <p class="ad-brand">나이키</p>
+                            <p class="ad-title">한계를 넘어서는 속도</p>
+                            <p class="ad-brand">Nike Air Zoom Alphafly</p>
                         </div>
                     </div>
                 </div>
@@ -205,7 +240,56 @@
                     <button class="goal-modal-cta" type="button">모으기</button>
                 </div>
             </section>
+
+            <section class="custom-modal" aria-hidden="true">
+                <div class="custom-modal-card">
+                    <header class="custom-modal-header">
+                        <span class="custom-header-icon">✨</span>
+                        <h2 class="custom-title">커스텀 단위 추가</h2>
+                        <button class="custom-modal-close" type="button" aria-label="닫기">×</button>
+                    </header>
+
+                    <form class="custom-form" novalidate>
+                        <div class="custom-field">
+                            <label>아이콘 선택</label>
+                            <div class="icon-grid">
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/book.png" checked />
+                                    <div class="icon-box">
+                                        <img src="images/book.png" alt="책" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/laptop.png" />
+                                    <div class="icon-box">
+                                        <img src="images/laptop.png" alt="노트북" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/diamond.png" />
+                                    <div class="icon-box">
+                                        <img src="images/diamond.png" alt="다이아몬드" />
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="custom-field">
+                            <label for="custom-name">단위 이름</label>
+                            <input id="custom-name" type="text" maxlength="8" placeholder="맥북 프로" />
+                        </div>
+
+                        <div class="custom-field">
+                            <label for="custom-price">기준 가격</label>
+                            <input id="custom-price" type="text" inputmode="numeric" placeholder="가격을 입력해주세요" />
+                        </div>
+
+                        <button class="custom-submit" type="submit" disabled>추가하기</button>
+                    </form>
+                </div>
+            </section>
         </div>
+        <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js" integrity="sha384-kDljxUXHaJ9xAb2AzRd59KkkjGtpjwjlMuLs8leEhbG47ZErbejd0L245q9dLL2e" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
         <script src="script.js"></script>
     </body>
