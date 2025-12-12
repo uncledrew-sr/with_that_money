@@ -26,9 +26,7 @@ body {
     align-items: flex-start;
     padding: 16px 12px;
     background: var(--app-bg);
-    font-family: -apple-system, BlinkMacSystemFont,
-        "Apple SD Gothic Neo", "Noto Sans KR", "Pretendard",
-        "Segoe UI", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Pretendard", "Segoe UI", sans-serif;
     color: var(--text-main);
 }
 
@@ -332,7 +330,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .summary-icon-img {
@@ -573,11 +571,11 @@ body {
     position: fixed;
     inset: 0;
     display: none;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    padding-top: 72px;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 40;
+    padding: 20px;
 }
 
 .wishlist-modal.is-open {
@@ -586,25 +584,48 @@ body {
 
 .wishlist-modal-card {
     width: 100%;
-    max-width: 360px;
+    max-width: 340px;
     border-radius: 24px;
     background: #ffffff;
-    padding: 20px 20px 18px;
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.26);
+    padding: 24px 24px 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.wishlist-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.wishlist-header-icon {
+    font-size: 22px;
+}
+
+.wishlist-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #191F28;
 }
 
 .wishlist-modal-close {
     position: absolute;
-    right: 0;
+    right: -4px;
     top: 50%;
     transform: translateY(-50%);
     border: none;
     background: #F2F4F6;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     font-size: 20px;
+    font-weight: 600;
     line-height: 1;
     cursor: pointer;
     color: #6B7684;
@@ -614,54 +635,32 @@ body {
     transition: background 0.2s;
 }
 
-.wishlist-modal-close:hover {
-    background: #e5e8eb;
-}
-
-.wishlist-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    margin-bottom: 24px;
-    position: relative;
-}
-
-.wishlist-header-icon {
-    font-size: 20px;
-}
-
-.wishlist-lock {
-    font-size: 18px;
-}
-
-.wishlist-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: #191F28
-}
-
 .wishlist-form {
-    margin-top: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .wishlist-field {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 28px;
+}
+
+.wishlist-field:last-of-type {
+    margin-bottom: 36px;
 }
 
 .wishlist-field label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
     color: #333D4B;
-    transition: color 0.2s;
+    margin-bottom: 8px;
+    line-height: 1.2;
 }
 
 .wishlist-field input {
     width: 100%;
-    height: 48px;
+    height: 52px;
     border-radius: 12px;
     border: 1px solid #E5E8EB;
     padding: 0 16px;
@@ -672,17 +671,31 @@ body {
     transition: all 0.2s;
 }
 
-.wishlist-field:focus-within label {
-    color: #4f6bff;
+.wishlist-field input::placeholder {
+    color: #B0B8C1;
+    font-size: 14px;
 }
 
 .wishlist-field:focus-within input {
-    border-color: #4f6bff;
-    box-shadow: 0 0 0 1px rgba(79, 107, 255, 0.18);
+    border-color: #5F7AFF;
+    box-shadow: 0 0 0 1px #5F7AFF;
 }
 
-.wishlist-field.is-error label {
+.wishlist-field:focus-within label {
+    color: #5F7AFF;
+}
+
+.wishlist-error {
+    display: none;
+    margin-top: 8px;
+    font-size: 12px;
     color: #e11d48;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.wishlist-field.is-error .wishlist-error {
+    display: block;
 }
 
 .wishlist-field.is-error input {
@@ -690,28 +703,21 @@ body {
     background: #fff5f6;
 }
 
-.wishlist-error {
-    margin: 4px 0 0;
-    min-height: 14px;
-    font-size: 11px;
-    color: #e11d48;
-}
-
 .wishlist-submit {
-    margin-top: 10px;
     width: 100%;
-    height: 46px;
-    border-radius: 999px;
+    height: 54px;
+    border-radius: 14px;
     border: none;
-    background: #e3e5f0;
-    color: #9ca3af;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: default;
+    background: #E5E8EB;
+    color: #8B95A1;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: not-allowed;
+    transition: background 0.2s, color 0.2s;
 }
 
 .wishlist-submit.is-active {
-    background: #4f6bff;
+    background: #5F7AFF;
     color: #ffffff;
     cursor: pointer;
 }
@@ -720,9 +726,6 @@ body {
     opacity: 1;
 }
 
-
-/* 모드 토글 */
-/* 경험형 사용자 (비로그인) */
 body.mode-basic .goal-progress {
     display: none;
 }
@@ -739,7 +742,6 @@ body.mode-basic .hint-goal {
     display: none;
 }
 
-/* 목표형 사용자 – 위시리스트 없음 */
 body.mode-goal.goal-empty .goal-progress {
     display: none;
 }
@@ -756,7 +758,6 @@ body.mode-goal.goal-empty .hint-goal {
     display: block;
 }
 
-/* 목표형 사용자 – 위시리스트 있음 */
 body.mode-goal.goal-has .goal-progress {
     display: block;
 }
