@@ -41,8 +41,6 @@ body {
     padding: 18px 18px 22px;
 }
 
-/* 헤더 */
-
 .app-header {
     display: flex;
     align-items: center;
@@ -89,8 +87,6 @@ body {
     cursor: pointer;
 }
 
-/* 목표 진행바 */
-
 .goal-progress {
     margin-top: 12px;
     margin-bottom: 12px;
@@ -130,8 +126,6 @@ body {
     background: var(--primary);
 }
 
-/* 힌트 배너 */
-
 .hint-banner {
     margin-top: 10px;
 }
@@ -144,8 +138,6 @@ body {
     background: #eef3ff;
     color: #ADADAD;
 }
-
-/* 입력 캡슐 */
 
 .amount-section {
     margin-top: 14px;
@@ -200,8 +192,6 @@ body {
     cursor: default;
     box-shadow: none;
 }
-
-/* 카테고리 캐러셀 */
 
 .category-section {
     margin-top: 12px;
@@ -283,8 +273,6 @@ body {
     font-weight: 500;
 }
 
-/* 공통 칩 */
-
 .chip {
     border-radius: var(--radius-pill);
     border: 1px solid var(--border-soft);
@@ -317,7 +305,6 @@ body {
     font-size: 18px;
 }
 
-/* 요약 카드 */
 .summary-card {
     margin-top: 12px;
     padding: 14px 16px;
@@ -371,8 +358,6 @@ body {
     color: var(--text-sub);
 }
 
-/* 버블 섹션 */
-
 .bubble-section {
     margin-top: 16px;
 }
@@ -411,8 +396,6 @@ body {
     background-repeat: no-repeat;
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
 }
-
-/* 광고 카드 */
 
 .ad-section {
     margin-top: 16px;
@@ -482,8 +465,6 @@ body {
     font-size: 12px;
     color: var(--text-sub);
 }
-
-/* 목표 관련 모달 */
 
 .goal-modal {
     position: fixed;
@@ -575,8 +556,6 @@ body {
     display: flex;
 }
 
-/* value-widget 특수 */
-
 .value-widget .chip-custom {
     border-style: dashed;
     border-color: #c7cfe4;
@@ -590,8 +569,6 @@ body {
     font-weight: 500;
 }
 
-/* 위시리스트 수정 모달 */
-
 .wishlist-modal {
     position: fixed;
     inset: 0;
@@ -599,7 +576,7 @@ body {
     align-items: flex-start;
     justify-content: center;
     padding-top: 72px;
-    background: rgba(15, 23, 42, 0.32);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 40;
 }
 
@@ -609,7 +586,7 @@ body {
 
 .wishlist-modal-card {
     width: 100%;
-    max-width: 380px;
+    max-width: 360px;
     border-radius: 24px;
     background: #ffffff;
     padding: 20px 20px 18px;
@@ -619,27 +596,39 @@ body {
 
 .wishlist-modal-close {
     position: absolute;
-    right: 16px;
-    top: 14px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     border: none;
-    background: #f3f4f8;
-    width: 32px;
-    height: 32px;
+    background: #F2F4F6;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
-    color: #9ca3af;
+    color: #6B7684;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.2s;
+}
+
+.wishlist-modal-close:hover {
+    background: #e5e8eb;
 }
 
 .wishlist-modal-header {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.wishlist-header-icon {
+    font-size: 20px;
 }
 
 .wishlist-lock {
@@ -648,33 +637,39 @@ body {
 
 .wishlist-title {
     margin: 0;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
+    color: #191F28
 }
 
 .wishlist-form {
-    margin-top: 4px;
+    margin-top: 0;
 }
 
 .wishlist-field {
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 
 .wishlist-field label {
     display: block;
     font-size: 13px;
-    margin-bottom: 6px;
-    color: #4b5563;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333D4B;
+    transition: color 0.2s;
 }
 
 .wishlist-field input {
     width: 100%;
+    height: 48px;
     border-radius: 12px;
-    border: 1px solid #d4d9e7;
-    padding: 10px 12px;
-    font-size: 14px;
+    border: 1px solid #E5E8EB;
+    padding: 0 16px;
+    font-size: 15px;
     outline: none;
     background: #ffffff;
+    color: #191F28;
+    transition: all 0.2s;
 }
 
 .wishlist-field:focus-within label {
@@ -744,7 +739,7 @@ body.mode-basic .hint-goal {
     display: none;
 }
 
-/* 목표형 사용자 – 위시리스트 아직 없음 */
+/* 목표형 사용자 – 위시리스트 없음 */
 body.mode-goal.goal-empty .goal-progress {
     display: none;
 }
@@ -761,7 +756,7 @@ body.mode-goal.goal-empty .hint-goal {
     display: block;
 }
 
-/* 목표형 사용자 – 위시리스트 설정됨 */
+/* 목표형 사용자 – 위시리스트 있음 */
 body.mode-goal.goal-has .goal-progress {
     display: block;
 }

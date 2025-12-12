@@ -685,7 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const MOCK_MODE = "experience"; // "experience" | "goal-empty" | "goal-has"
+    const MOCK_MODE = "goal-empty"; // "experience" | "goal-empty" | "goal-has"
 
     if (MOCK_MODE === "experience") {
         initValueCalculator({ loggedIn: false });
