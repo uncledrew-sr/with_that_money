@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const amountInput = document.querySelector(".amount-input");
     const equalBtn = document.querySelector(".amount-equal-btn");
-    const summaryCard = document.querySelector(".summary-card"); // 요약 카드 선택자 추가
+    const summaryCard = document.querySelector(".summary-card");
     const summaryLabelEl = document.querySelector(".summary-label");
     const summaryAmountLinkEl = document.querySelector(".summary-amount-link");
     const summaryRightEl = document.querySelector(".summary-right");
@@ -356,8 +356,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (cat.id === "heart") {
             summaryLabelEl.textContent = "널 향한 나의 사랑";
+            summaryLabelEl.classList.add("special-heart-text");
         } else {
             summaryLabelEl.textContent = cat.label;
+            summaryLabelEl.classList.remove("special-heart-text");
         }
 
         if (summaryIconImgEl) {
@@ -368,13 +370,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cat.id === "heart") {
             summaryAmountLinkEl.textContent = "";
             summaryRightEl.textContent = "∞";
-        } else if (cat.price && amount > 0) {
-            const n = amount / cat.price;
-            summaryAmountLinkEl.textContent = `${n.toFixed(1)}${cat.unit}`;
+        } else if (cat.price && amount >= 0) {
+            const targetVal = amount / cat.price;
+            const currentText = summaryAmountLinkEl.textContent.replace(/[^0-9.]/g, "");
+            const startVal = parseFloat(currentText) || 0;
+            animateFloat(summaryAmountLinkEl, startVal, targetVal, 500, cat.unit);
+
             summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
-        } else if (cat.price && amount === 0) {
-            summaryAmountLinkEl.textContent = `0${cat.unit}`;
-            summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
+
         } else {
             summaryAmountLinkEl.textContent = "-";
             summaryRightEl.textContent = "기준가 없음";
@@ -727,6 +730,21 @@ document.addEventListener("DOMContentLoaded", () => {
         if(ovEls.celGoalName) ovEls.celGoalName.textContent = wishlist.name;
         if(ovEls.celSaved) ovEls.celSaved.textContent = formatNumber(savedAmount);
         if(overlayCelebrate) overlayCelebrate.classList.add("is-active");
+
+        confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+        });
+        function fire(ratio, opt) {
+            confetti(Object.assign({}, opt, {
+                origin: { y: 0.7 },
+                particleCount: Math.floor(200 * ratio)
+            }));
+        }
+        fire(0.25, { spread: 26, startVelocity: 55, decay: 0.95, scalar: 1.2 });
+        fire(0.2, { spread: 60 });
+
         if(ovEls.btnBuy) {
             ovEls.btnBuy.onclick = () => {
                 if (wishlist.url) window.open(wishlist.url, "_blank");
@@ -779,3 +797,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+function animateValue(obj, start, end, duration, unit = "") {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        
+        const currentVal = Math.floor(progress * (end - start) + start);
+        obj.textContent = `${currentVal.toLocaleString()}${unit}`;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.textContent = `${end.toLocaleString()}${unit}`;
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function animateFloat(obj, start, end, duration, unit) {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        
+        const currentVal = progress * (end - start) + start;
+        
+        obj.textContent = `${currentVal.toFixed(1)}${unit}`;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.textContent = `${end.toFixed(1)}${unit}`;
+        }
+    };
+    window.requestAnimationFrame(step);
+}
