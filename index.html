@@ -156,7 +156,9 @@
             <section class="wishlist-modal" aria-hidden="true">
                 <div class="wishlist-modal-card">
                     <header class="wishlist-modal-header">
-                        <span class="wishlist-header-icon">🛍️</span>
+                        <div class="wishlist-header-icon">
+                            <img src="images/shoppingBag.png" alt="아이콘" />
+                        </div>
                         <h2 class="wishlist-title">위시리스트</h2>
                         <button class="wishlist-modal-close" type="button" aria-label="닫기">
                             ×
@@ -245,38 +247,17 @@
             <section class="custom-modal" aria-hidden="true">
                 <div class="custom-modal-card">
                     <header class="custom-modal-header">
+                        <div class="custom-header-icon">
+                            <img src="images/custom.png" alt="커스텀 아이콘" />
+                        </div>
                         <h2 class="custom-title">커스텀 단위 추가</h2>
                         <button class="custom-modal-close" type="button" aria-label="닫기">×</button>
                     </header>
 
                     <form class="custom-form" novalidate>
                         <div class="custom-field">
-                            <label>아이콘 선택</label>
-                            <div class="icon-grid">
-                                <label class="icon-option">
-                                    <input type="radio" name="custom-icon" value="images/book.png" checked />
-                                    <div class="icon-box">
-                                        <img src="images/book.png" alt="책" />
-                                    </div>
-                                </label>
-                                <label class="icon-option">
-                                    <input type="radio" name="custom-icon" value="images/laptop.png" />
-                                    <div class="icon-box">
-                                        <img src="images/laptop.png" alt="노트북" />
-                                    </div>
-                                </label>
-                                <label class="icon-option">
-                                    <input type="radio" name="custom-icon" value="images/diamond.png" />
-                                    <div class="icon-box">
-                                        <img src="images/diamond.png" alt="다이아몬드" />
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="custom-field">
-                            <label for="custom-name">단위 이름</label>
-                            <input id="custom-name" type="text" maxlength="8" placeholder="맥북 프로" />
+                            <label for="custom-name">단위명</label>
+                            <input id="custom-name" type="text" maxlength="8" placeholder="ex. 피시방, 버스, 한우" />
                         </div>
 
                         <div class="custom-field">
@@ -284,7 +265,48 @@
                             <input id="custom-price" type="text" inputmode="numeric" placeholder="가격을 입력해주세요" />
                         </div>
 
-                        <button class="custom-submit" type="submit" disabled>추가하기</button>
+                        <div class="custom-field">
+                            <label for="custom-unit">단위 명사</label>
+                            <input id="custom-unit" type="text" maxlength="5" placeholder="ex. 시간, 개, 박스" />
+                        </div>
+
+                        <div class="custom-field">
+                            <label>아이콘 선택</label>
+                            <div class="icon-grid">
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/book.png" checked />
+                                    <div class="icon-circle">
+                                        <img src="images/book.png" alt="책" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/laptop.png" />
+                                    <div class="icon-circle">
+                                        <img src="images/laptop.png" alt="노트북" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/diamond.png" />
+                                    <div class="icon-circle">
+                                        <img src="images/diamond.png" alt="다이아몬드" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/cookie.png" />
+                                    <div class="icon-circle">
+                                        <img src="images/cookie.png" alt="쿠키" />
+                                    </div>
+                                </label>
+                                <label class="icon-option">
+                                    <input type="radio" name="custom-icon" value="images/pizza.png" />
+                                    <div class="icon-circle">
+                                        <img src="images/pizza.png" alt="피자" />
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="custom-submit" type="submit" disabled>커스텀 단위 추가하기</button>
                     </form>
                 </div>
             </section>
