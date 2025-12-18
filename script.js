@@ -47,11 +47,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const BUBBLE_PRESETS = {
-        coffee: { id: "coffee", label: "커피", price: 4500, unit: "잔", img: "images/coffee.png" },
-        taxi: { id: "taxi", label: "택시", price: 4800, unit: "번", img: "images/taxi.png" },
-        burger: { id: "burger", label: "햄버거", price: 5500, unit: "개", img: "images/hamburger.png" },
-        gukbab: { id: "gukbab", label: "국밥", price: 10000, unit: "그릇", img: "images/gukbab.png" },
-        heart: { id: "heart", label: "하트", price: null, unit: "", img: "images/heart.png" }
+        coffee: {
+            id: "coffee",
+            label: "커피",
+            price: 4500,
+            unit: "잔",
+            img: "images/bubble/bubble-coffee.png",
+            icon: "images/coffee.png"
+        },
+        taxi: {
+            id: "taxi",
+            label: "택시",
+            price: 4800,
+            unit: "번",
+            img: "images/bubble/bubble-taxi.png",
+            icon: "images/taxi.png"
+        },
+        burger: {
+            id: "burger",
+            label: "햄버거",
+            price: 5500,
+            unit: "개",
+            img: "images/bubble/bubble-hamburger.png",
+            icon: "images/hamburger.png"
+        },
+        gukbab: {
+            id: "gukbab",
+            label: "국밥",
+            price: 10000,
+            unit: "그릇",
+            img: "images/bubble/bubble-gukbab.png",
+            icon: "images/gukbab.png"
+        },
+        heart: {
+            id: "heart",
+            label: "하트",
+            price: null,
+            unit: "",
+            img: "images/bubble/bubble-heart.png",
+            icon: "images/heart.png"
+        }
     };
 
     let customCategories = [];
@@ -213,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const customCloseBtn = customModal ? customModal.querySelector(".custom-modal-close") : null;
     const customForm = customModal ? customModal.querySelector(".custom-form") : null;
     const customNameInput = customModal ? customModal.querySelector("#custom-name") : null;
+    const customUnitInput = customModal ? customModal.querySelector("#custom-unit") : null;
     const customPriceInput = customModal ? customModal.querySelector("#custom-price") : null;
     const customSubmitBtn = customModal ? customModal.querySelector(".custom-submit") : null;
     const customIconInputs = customModal ? customModal.querySelectorAll("input[name='custom-icon']") : [];
@@ -221,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!customModal) return;
         customModal.classList.add("is-open");
         if(customNameInput) customNameInput.value = "";
+        if(customUnitInput) customUnitInput.value = "";
         if(customPriceInput) customPriceInput.value = "";
         if(customIconInputs.length > 0) customIconInputs[0].checked = true;
         validateCustomForm();
@@ -259,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             const name = customNameInput.value.trim();
+            const unitVal = customUnitInput && customUnitInput.value.trim() ? customUnitInput.value.trim() : "개";
             const price = parseInt(customPriceInput.value.replace(/[^0-9]/g, ""), 10);
             const selectedIcon = document.querySelector("input[name='custom-icon']:checked").value;
             const id = `custom-${Date.now()}`;
@@ -266,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: id,
                 label: name,
                 price: price,
-                unit: "개",
+                unit: unitVal,
                 img: selectedIcon
             });
             currentCategoryId = id;
@@ -284,14 +322,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const amountInput = document.querySelector(".amount-input");
     const equalBtn = document.querySelector(".amount-equal-btn");
-    const summaryCard = document.querySelector(".summary-card"); // 요약 카드 선택자 추가
+    const summaryCard = document.querySelector(".summary-card");
     const summaryLabelEl = document.querySelector(".summary-label");
-    const summaryAmountLinkEl = document.querySelector(".summary-amount-link");
+    const summaryNumEl = document.getElementById("summary-num");
+    const summaryUnitEl = document.getElementById("summary-unit");
     const summaryRightEl = document.querySelector(".summary-right");
     const summaryIconImgEl = document.querySelector(".summary-icon-img");
 
     const SCROLL_AMOUNT = 140;
     const DEFAULT_AMOUNT = 100000;
+    const MIN_AMOUNT = 1000;
+    const MAX_AMOUNT = 10000000;
 
     function renderCategories() {
         if (!track) return;
@@ -356,27 +397,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (cat.id === "heart") {
             summaryLabelEl.textContent = "널 향한 나의 사랑";
+            summaryLabelEl.classList.add("special-heart-text");
         } else {
             summaryLabelEl.textContent = cat.label;
+            summaryLabelEl.classList.remove("special-heart-text");
         }
 
         if (summaryIconImgEl) {
-            summaryIconImgEl.src = cat.img;
+            summaryIconImgEl.src = cat.icon || cat.img;
             summaryIconImgEl.alt = cat.label;
         }
 
         if (cat.id === "heart") {
-            summaryAmountLinkEl.textContent = "";
+            if(summaryNumEl) summaryNumEl.textContent = "";
+            if(summaryUnitEl) summaryUnitEl.textContent = "∞";
             summaryRightEl.textContent = "∞";
-        } else if (cat.price && amount > 0) {
-            const n = amount / cat.price;
-            summaryAmountLinkEl.textContent = `${n.toFixed(1)}${cat.unit}`;
+        } else if (cat.price && amount >= 0) {
+            const targetVal = amount / cat.price;
+            const currentText = summaryNumEl.textContent.replace(/[^0-9.]/g, "");
+            const startVal = parseFloat(currentText) || 0;
+            animateFloat(summaryNumEl, startVal, targetVal, 500);
+
+            if(summaryUnitEl) summaryUnitEl.textContent = cat.unit;
             summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
-        } else if (cat.price && amount === 0) {
-            summaryAmountLinkEl.textContent = `0${cat.unit}`;
-            summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
+
         } else {
-            summaryAmountLinkEl.textContent = "-";
+            if(summaryNumEl) summaryNumEl.textContent = "-";
+            if(summaryUnitEl) summaryUnitEl.textContent = "";
             summaryRightEl.textContent = "기준가 없음";
         }
     }
@@ -442,10 +489,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let value = parseInt(this.value);
             
-            if (value > 2000000) {
-                this.value = "2000000"; 
-                value = 2000000;
-                showAmountError("최대 200만원까지만 가능해요");
+            if (value > MAX_AMOUNT) {
+                this.value = MAX_AMOUNT.toString(); 
+                value = MAX_AMOUNT;
+                showAmountError("최대 1,000만원까지만 가능해요");
             } else {
                 hideAmountError();
             }
@@ -463,12 +510,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (value < 10000) {
-                showAmountError("최소 10,000원부터 가능해요");
-                this.value = 10000;
-            } else if (value > 2000000) {
-                showAmountError("최대 200만원까지만 가능해요");
-                this.value = 2000000;
+            if (value < MIN_AMOUNT) {
+                showAmountError("최소 1,000원부터 가능해요");
+                this.value = MIN_AMOUNT;
+            } else if (value > MAX_AMOUNT) {
+                showAmountError("최대 1,000만원까지만 가능해요");
+                this.value = MAX_AMOUNT;
             } else {
                 hideAmountError();
             }
@@ -486,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 amountInput.value = `${formatNumber(v)} 원`;
             }
             const numVal = parseInt(amountInput.value.replace(/[^0-9]/g, ""));
-            if(numVal >= 10000 && numVal <= 2000000) {
+            if(numVal >= MIN_AMOUNT && numVal <= MAX_AMOUNT) {
                 hideAmountError();
             }
         });
@@ -634,7 +681,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, wallOptions);
         const leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, wallOptions);
         const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, wallOptions);
-        walls = [ground, leftWall, rightWall];
+        
+        if (cat.id === "heart") {
+            walls = [leftWall, rightWall];
+        } else {
+            walls = [ground, leftWall, rightWall];
+        }
+
         World.add(bubbleWorld, walls);
 
         const imgPath = cat.img;
@@ -727,6 +780,21 @@ document.addEventListener("DOMContentLoaded", () => {
         if(ovEls.celGoalName) ovEls.celGoalName.textContent = wishlist.name;
         if(ovEls.celSaved) ovEls.celSaved.textContent = formatNumber(savedAmount);
         if(overlayCelebrate) overlayCelebrate.classList.add("is-active");
+
+        confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+        });
+        function fire(ratio, opt) {
+            confetti(Object.assign({}, opt, {
+                origin: { y: 0.7 },
+                particleCount: Math.floor(200 * ratio)
+            }));
+        }
+        fire(0.25, { spread: 26, startVelocity: 55, decay: 0.95, scalar: 1.2 });
+        fire(0.2, { spread: 60 });
+
         if(ovEls.btnBuy) {
             ovEls.btnBuy.onclick = () => {
                 if (wishlist.url) window.open(wishlist.url, "_blank");
@@ -779,3 +847,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+function animateValue(obj, start, end, duration, unit = "") {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        
+        const currentVal = Math.floor(progress * (end - start) + start);
+        obj.textContent = `${currentVal.toLocaleString()}${unit}`;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.textContent = `${end.toLocaleString()}${unit}`;
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function animateFloat(obj, start, end, duration) {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        
+        const currentVal = progress * (end - start) + start;
+        
+        obj.textContent = `${currentVal.toFixed(1)}`;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.textContent = `${end.toFixed(1)}`;
+        }
+    };
+    window.requestAnimationFrame(step);
+}
