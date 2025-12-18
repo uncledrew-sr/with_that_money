@@ -253,6 +253,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const customSubmitBtn = customModal ? customModal.querySelector(".custom-submit") : null;
     const customIconInputs = customModal ? customModal.querySelectorAll("input[name='custom-icon']") : [];
 
+    const MAX_PRICE_LIMIT = 2000000;
+    const MIN_PRICE_LIMIT = 10000;
+    const MAX_NAME_LENGTH = 10;
+    const MAX_UNIT_LENGTH = 3;
+
     function openCustomModal() {
         if (!customModal) return;
         customModal.classList.add("is-open");
@@ -268,24 +273,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function validateCustomForm() {
-        if(!customNameInput || !customPriceInput || !customSubmitBtn) return;
+        if(!customNameInput || !customPriceInput || !customUnitInput || !customSubmitBtn) return;
+        
         const name = customNameInput.value.trim();
+        const unit = customUnitInput.value.trim();
         const priceStr = customPriceInput.value.replace(/[^0-9]/g, "");
+        const price = parseInt(priceStr, 10);
+
         let valid = true;
-        if(!name) valid = false;
-        if(!priceStr) valid = false;
+        
+        if(!name || name.length > MAX_NAME_LENGTH) valid = false;
+        if(!unit || unit.length > MAX_UNIT_LENGTH) valid = false;
+
+        // 커스텀 가격 제한 적용 (1만 원 ~ 200만 원)
+        if(!priceStr || isNaN(price) || price < MIN_PRICE_LIMIT || price > MAX_PRICE_LIMIT) valid = false;
+
         customSubmitBtn.disabled = !valid;
         customSubmitBtn.classList.toggle("is-active", valid);
     }
 
     if (customCloseBtn) customCloseBtn.addEventListener("click", closeCustomModal);
     
-    [customNameInput, customPriceInput].forEach(input => {
-        if(input) input.addEventListener("input", () => {
-            if (input === customPriceInput) input.value = input.value.replace(/[^0-9]/g, "");
+    [customNameInput, customUnitInput].forEach(input => {
+        if(input) input.addEventListener("input", validateCustomForm);
+    });
+
+    if (customPriceInput) {
+        customPriceInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            
+            let val = parseInt(this.value, 10);
+            if (!isNaN(val) && val > MAX_PRICE_LIMIT) {
+                this.value = MAX_PRICE_LIMIT.toString();
+            }
             validateCustomForm();
         });
-    });
+        
+        customPriceInput.addEventListener("blur", function() {
+            let val = parseInt(this.value.replace(/[^0-9]/g, ""), 10);
+            if (!isNaN(val) && val > 0) {
+                this.value = `${formatNumber(val)}원`;
+            } else {
+                this.value = "";
+            }
+            validateCustomForm();
+        });
+        
+        customPriceInput.addEventListener("focus", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        });
+    }
 
     if(customForm) {
         customForm.addEventListener("submit", (e) => {
@@ -296,17 +333,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             const name = customNameInput.value.trim();
-            const unitVal = customUnitInput && customUnitInput.value.trim() ? customUnitInput.value.trim() : "개";
+            const unitVal = customUnitInput.value.trim();
             const price = parseInt(customPriceInput.value.replace(/[^0-9]/g, ""), 10);
             const selectedIcon = document.querySelector("input[name='custom-icon']:checked").value;
             const id = `custom-${Date.now()}`;
+            
             customCategories.push({
                 id: id,
                 label: name,
                 price: price,
                 unit: unitVal,
-                img: selectedIcon
+                img: selectedIcon,
+                icon: selectedIcon
             });
+            
             currentCategoryId = id;
             renderCategories();
             updateSummaryCard();
@@ -331,8 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const SCROLL_AMOUNT = 140;
     const DEFAULT_AMOUNT = 100000;
-    const MIN_AMOUNT = 1000;
-    const MAX_AMOUNT = 10000000;
 
     function renderCategories() {
         if (!track) return;
@@ -410,7 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (cat.id === "heart") {
             if(summaryNumEl) summaryNumEl.textContent = "";
-            if(summaryUnitEl) summaryUnitEl.textContent = "∞";
+            if(summaryUnitEl) summaryUnitEl.textContent = "";
             summaryRightEl.textContent = "∞";
         } else if (cat.price && amount >= 0) {
             const targetVal = amount / cat.price;
@@ -489,10 +527,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let value = parseInt(this.value);
             
-            if (value > MAX_AMOUNT) {
-                this.value = MAX_AMOUNT.toString(); 
-                value = MAX_AMOUNT;
-                showAmountError("최대 1,000만원까지만 가능해요");
+            if (value > MAX_PRICE_LIMIT) {
+                this.value = MAX_PRICE_LIMIT.toString(); 
+                value = MAX_PRICE_LIMIT;
+                showAmountError("최대 200만원까지만 가능해요");
             } else {
                 hideAmountError();
             }
@@ -510,12 +548,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (value < MIN_AMOUNT) {
-                showAmountError("최소 1,000원부터 가능해요");
-                this.value = MIN_AMOUNT;
-            } else if (value > MAX_AMOUNT) {
-                showAmountError("최대 1,000만원까지만 가능해요");
-                this.value = MAX_AMOUNT;
+            if (value < MIN_PRICE_LIMIT) {
+                showAmountError("최소 10,000원부터 가능해요");
+                this.value = MIN_PRICE_LIMIT;
+            } else if (value > MAX_PRICE_LIMIT) {
+                showAmountError("최대 200만원까지만 가능해요");
+                this.value = MAX_PRICE_LIMIT;
             } else {
                 hideAmountError();
             }
@@ -533,7 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 amountInput.value = `${formatNumber(v)} 원`;
             }
             const numVal = parseInt(amountInput.value.replace(/[^0-9]/g, ""));
-            if(numVal >= MIN_AMOUNT && numVal <= MAX_AMOUNT) {
+            if(numVal >= MIN_PRICE_LIMIT && numVal <= MAX_PRICE_LIMIT) {
                 hideAmountError();
             }
         });
