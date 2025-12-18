@@ -348,22 +348,23 @@ body {
 }
 
 .summary-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #f3f6ff;
+    width: 30px;
+    height: 30px;
+    border-radius: 0; 
+    background: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    overflow: hidden;
+    margin-left: 4px;
+    margin-right: 6px;
 }
 
 .summary-icon-img {
-    width: 24px;
-    height: 24px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     display: block;
+    border-radius: 8px;
 }
 
 .summary-text {
@@ -371,10 +372,20 @@ body {
     font-size: 14px;
 }
 
+.summary-label{
+    font-weight: 600;
+}
+
 .summary-amount-link {
     color: var(--primary);
     text-decoration: none;
     font-weight: 600;
+}
+
+#summary-unit {
+    color: var(--text-main);
+    font-weight: 600;
+    margin-left: 2px;
 }
 
 .summary-right {
