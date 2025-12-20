@@ -1,25 +1,27 @@
 # value-calculator
+front-end repo(original) : https://github.com/uncledrew-sr/with_that_money
+back-end repo(original) : https://github.com/str-leshs/value-calculator
 
-## 개발팀 소개 (Team Information)
+### 개발팀 소개
 <table align="center">
   <tr>
     <td align="center">
       <img src="images/dev1.png" width="150px;" alt="개발자1"/><br />
       <b>황예린</b><br />
       <p>기획 및 UI 디자인</p>
-      <a href="https://github.com/id1">GitHub</a>
+      <a href="https://github.com/Hwangyerin">GitHub</a>
     </td>
     <td align="center">
       <img src="images/dev2.png" width="150px;" alt="개발자2"/><br />
       <b>최범규</b><br />
       <p>프론트엔드</p>
-      <a href="https://github.com/id2">GitHub</a>
+      <a href="https://github.com/uncledrew-sr">GitHub</a>
     </td>
     <td align="center">
       <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
       <b>이은서</b><br />
       <p>백엔드</p>
-      <a href="https://github.com/id3">GitHub</a>
+      <a href="https://github.com/str-leshs">GitHub</a>
     </td>
   </tr>
 </table>
@@ -58,7 +60,7 @@ python -m http.server 8000
 ~~~
 브라우저 주소창에 http://localhost:8000을 입력하여 접속합니다.
 
-### 프로젝트 구조
+### Repo 구조
 ~~~Bash
 .
 ├── index.html        # 메인 UI 구조 및 외부 라이브러리 로드
@@ -69,13 +71,8 @@ python -m http.server 8000
 └── images/           # 서비스에 사용되는 아이콘 및 이미지 에셋
 ~~~
 
-- 주요 파일 상세
-    - index.html : 저축 현황바, 금액 입력창, 버블 컨테이너, 그리고 각종 설정 모달(위시리스트, 커스텀 단위)이 정의되어 있습니다.
-    - script.js : Matter.js를 초기화하여 버블 물리 연산을 수행하고, 입력된 금액에 따른 유닛 계산(debounce 적용) 및 UI 업데이트를 담당합니다.
-    - api.js : ApiService 객체를 통해 로그인, 위시리스트 CRUD, 단위(Unit) 정보 조회 등 서버와의 모든 통신을 캡슐화합니다.
-    - style.css : mode-basic, goal-has 등 바디 클래스에 따른 레이아웃 전환과 가상 요소 등을 활용한 디자인 시스템을 포함합니다.
-
-### Front-end Tech Stack
-- 언어 : JavaScript (ES6+), HTML5, CSS3
-- 물리 엔진 : Matter.js (버블 애니메이션 구현)
-- 외부 라이브러리 : Canvas Confetti (목표 달성 효과)
+### Tech Stack
+- 프론트엔드
+    - 언어 : JavaScript (ES6+), HTML5, CSS3
+    - 물리 엔진 : Matter.js (버블 애니메이션 구현)
+    - 외부 라이브러리 : Canvas Confetti (목표 달성 효과)
