@@ -1,5 +1,4 @@
-# value-calculator
-### 개발팀 소개
+# 개발팀 소개
 <table align="center">
   <tr>
     <td align="center">
@@ -7,25 +6,28 @@
       <b>황예린</b><br />
       <p>기획 및 UI 디자인</p>
       <a href="https://github.com/Hwangyerin">GitHub</a>
+      <div><a href="">Figma URL</a></div>
     </td>
     <td align="center">
       <img src="images/dev2.png" width="150px;" alt="개발자2"/><br />
       <b>최범규</b><br />
       <p>프론트엔드</p>
       <a href="https://github.com/uncledrew-sr">GitHub</a>
-      <a hred="https://github.com/uncledrew-sr/with_that_money">Front-end repo(original)</a>
+      <div><a href="https://github.com/uncledrew-sr/with_that_money">Front-end repo(original)</a></div>
     </td>
     <td align="center">
       <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
       <b>이은서</b><br />
       <p>백엔드</p>
       <a href="https://github.com/str-leshs">GitHub</a>
-      <a hred="https://github.com/str-leshs/value-calculator">Back-end repo(original)</a>
+      <div><a href="https://github.com/str-leshs/value-calculator">Back-end repo(original)</a></div>
     </td>
   </tr>
 </table>
 
-### 설치 방법
+# 프로젝트 개요
+
+# 설치 방법
 이 프로젝트는 별도의 빌드 도구(Webpack, Vite 등)가 필요 없는 Vanilla JS 기반 프로젝트입니다.
 
 1. 저장소 클론 (Repository Clone)
@@ -42,7 +44,7 @@ const CONFIG = {
 };
 ~~~
 
-### 실행 방법
+# 실행 방법
 브라우저의 보안 정책(CORS 및 ES 모듈 제한)으로 인해 index.html 파일을 단순히 더블 클릭하여 실행하면 API 통신이나 일부 기능이 작동하지 않을 수 있습니다. 따라서 로컬 웹 서버 환경에서 실행하는 것을 권장합니다.
 
 1. 방법 A : VS Code Live Server 사용
@@ -59,7 +61,7 @@ python -m http.server 8000
 ~~~
 브라우저 주소창에 http://localhost:8000을 입력하여 접속합니다.
 
-### Repo 구조
+# Repo 구조
 ~~~Bash
 .
 ├── index.html        # 메인 UI 구조 및 외부 라이브러리 로드
@@ -70,7 +72,7 @@ python -m http.server 8000
 └── images/           # 서비스에 사용되는 아이콘 및 이미지 에셋
 ~~~
 
-### Tech Stack
+# Tech Stack
 - 프론트엔드
     - 언어 : JavaScript (ES6+), HTML5, CSS3
     - 물리 엔진 : Matter.js (버블 애니메이션 구현)
