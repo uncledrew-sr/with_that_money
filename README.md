@@ -1,31 +1,63 @@
-# value-calculator
-### 개발팀 소개
-<table align="center">
+# 개발팀 소개
+<table width="100%">
   <tr>
-    <td align="center">
-      <img src="images/dev1.png" width="150px;" alt="개발자1"/><br />
-      <b>황예린</b><br />
-      <p>기획 및 UI 디자인</p>
-      <a href="https://github.com/Hwangyerin">GitHub</a>
+    <td align="center" width="33.33%" valign="top">
+      <a href="https://github.com/Hwangyerin">
+        <img src="https://github.com/Hwangyerin.png" width="100px;" alt="황예린 프로필" style="border-radius: 50%;"/><br />
+        <sub><b>황예린</b></sub>
+      </a>
+      <br /><br />
+      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" />
+      <img src="https://img.shields.io/badge/UI%2FUX-F24E1E?style=flat-square&logo=Figma&logoColor=white" />
+      <br />
+      <div align="left" style="margin-top: 10px;">
+        <b>기획/디자인</b>
+      </div>
+      <br />
+      <a href="YOUR_FIGMA_URL_HERE">
+        <img src="https://img.shields.io/badge/Figma_Design-F24E1E?style=for-the-badge&logo=figma&logoColor=white" height="25px" />
+      </a>
     </td>
-    <td align="center">
-      <img src="images/dev2.png" width="150px;" alt="개발자2"/><br />
-      <b>최범규</b><br />
-      <p>프론트엔드</p>
-      <a href="https://github.com/uncledrew-sr">GitHub</a>
-      <a hred="https://github.com/uncledrew-sr/with_that_money">Front-end repo(original)</a>
+    <td align="center" width="33.33%" valign="top">
+      <a href="https://github.com/uncledrew-sr">
+        <img src="https://github.com/uncledrew-sr.png" width="100px;" alt="최범규 프로필" style="border-radius: 50%;"/><br />
+        <sub><b>최범규</b></sub>
+      </a>
+      <br /><br />
+      <img src="https://img.shields.io/badge/Frontend-5F7AFF?style=flat-square&logo=JavaScript&logoColor=white" />
+      <img src="https://img.shields.io/badge/Matter.js-2C3E50?style=flat-square&logo=physics&logoColor=white" />
+      <br />
+      <div align="left" style="margin-top: 10px;">
+        <b>프론트엔드</b>
+      </div>
+      <br />
+      <a href="https://github.com/uncledrew-sr/with_that_money">
+        <img src="https://img.shields.io/badge/FE_Repo-181717?style=for-the-badge&logo=github&logoColor=white" height="25px" />
+      </a>
     </td>
-    <td align="center">
-      <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
-      <b>이은서</b><br />
-      <p>백엔드</p>
-      <a href="https://github.com/str-leshs">GitHub</a>
-      <a hred="https://github.com/str-leshs/value-calculator">Back-end repo(original)</a>
+    <td align="center" width="33.33%" valign="top">
+      <a href="https://github.com/str-leshs">
+        <img src="https://github.com/str-leshs.png" width="100px;" alt="이은서 프로필" style="border-radius: 50%;"/><br />
+        <sub><b>이은서</b></sub>
+      </a>
+      <br /><br />
+      <img src="https://img.shields.io/badge/Backend-3178C6?style=flat-square&logo=Java&logoColor=white" />
+      <img src="https://img.shields.io/badge/Database-4479A1?style=flat-square&logo=MySQL&logoColor=white" />
+      <br />
+      <div align="left" style="margin-top: 10px;">
+        <b>백엔드</b>
+      </div>
+      <br />
+      <a href="https://github.com/str-leshs/value-calculator">
+        <img src="https://img.shields.io/badge/BE_Repo-181717?style=for-the-badge&logo=github&logoColor=white" height="25px" />
+      </a>
     </td>
   </tr>
 </table>
 
-### 설치 방법
+# 프로젝트 개요
+
+# 설치 방법
 이 프로젝트는 별도의 빌드 도구(Webpack, Vite 등)가 필요 없는 Vanilla JS 기반 프로젝트입니다.
 
 1. 저장소 클론 (Repository Clone)
@@ -42,7 +74,7 @@ const CONFIG = {
 };
 ~~~
 
-### 실행 방법
+# 실행 방법
 브라우저의 보안 정책(CORS 및 ES 모듈 제한)으로 인해 index.html 파일을 단순히 더블 클릭하여 실행하면 API 통신이나 일부 기능이 작동하지 않을 수 있습니다. 따라서 로컬 웹 서버 환경에서 실행하는 것을 권장합니다.
 
 1. 방법 A : VS Code Live Server 사용
@@ -59,7 +91,7 @@ python -m http.server 8000
 ~~~
 브라우저 주소창에 http://localhost:8000을 입력하여 접속합니다.
 
-### Repo 구조
+# Repo 구조
 ~~~Bash
 .
 ├── index.html        # 메인 UI 구조 및 외부 라이브러리 로드
@@ -70,7 +102,7 @@ python -m http.server 8000
 └── images/           # 서비스에 사용되는 아이콘 및 이미지 에셋
 ~~~
 
-### Tech Stack
+# Tech Stack
 - 프론트엔드
     - 언어 : JavaScript (ES6+), HTML5, CSS3
     - 물리 엔진 : Matter.js (버블 애니메이션 구현)
