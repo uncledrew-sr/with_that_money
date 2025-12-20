@@ -100,3 +100,61 @@ World.add(bubbleWorld, matterBubbles);
 - 하트 모드 : '하트' 카테고리 선택 시 일반적인 물리 법칙과 다른 시각 효과를 부여합니다.
     - 무한 루프 : 하트 버블이 바닥으로 떨어지면 다시 상단으로 재배치(Body.setPosition)하여 끊임없이 쏟아지는 효과를 연출합니다.
     - 배경 효과 : setInterval을 이용해 배경에 floating-heart 애니메이션 요소를 주기적으로 생성합니다.
+
+# UI 상태 관리 및 라우팅 (Core State Management)
+- 본 프로젝트는 복잡한 UI 분기 처리를 위해 단일 진입점(Single Entry Point) 패턴을 적용했습니다.
+- initValueCalculator 함수 하나가 사용자의 로그인 여부와 데이터 상태를 분석하여 앱의 전체적인 모드를 결정합니다.
+
+### [1] 핵심 라우터 함수 : initValueCalculator
+- 앱 초기 진입 시 실행되며, 조건에 따라 3가지 화면 모드 중 하나로 라우팅합니다.
+
+~~~JavaScript
+window.initValueCalculator = function ({ loggedIn = false, wishlist = null, savedAmount = 0 } = {}) {
+    // 상태 1: 로그인 + 위시리스트 존재 (목표 달성 모드)
+    if (loggedIn && wishlist) {
+        updateGoalProgress(); // 프로그레스 바 업데이트
+        setGoalHasMode();     // UI 클래스 전환
+    } 
+    // 상태 2: 로그인 + 위시리스트 없음 (목표 설정 유도 모드)
+    else if (loggedIn && !wishlist) {
+        setGoalEmptyMode();
+    } 
+    // 상태 3: 비로그인 (단순 체험 모드)
+    else {
+        setExperienceMode();
+    }
+};
+~~~
+
+### [2] 선언적 UI 제어 (Declarative UI Control)
+- 자바스크립트 내부에서 DOM의 스타일(style.display)을 직접 조작하는 명령형 방식을 지양하였습니다.
+- Body 태그의 클래스를 교체하는 선언적 방식을 채택하여 유지보수성을 높였습니다.
+    - DX(Developer Experience) : JS는 '상태'만 변경하고, 실제 요소의 노출/숨김 처리는 CSS(style.css)가 전담하여 역할이 명확히 분리됩니다.
+
+~~~JavaScript
+function setGoalEmptyMode() {
+    document.body.classList.add("mode-goal", "goal-empty");
+    document.body.classList.remove("mode-basic", "goal-has");
+}
+
+function setGoalHasMode() {
+    document.body.classList.add("mode-goal", "goal-has");
+    document.body.classList.remove("mode-basic", "goal-empty");
+}
+
+function setExperienceMode() {
+    document.body.classList.add("mode-basic");
+    document.body.classList.remove("mode-goal", "goal-empty", "goal-has");
+}
+~~~
+
+~~~CSS
+body.mode-basic .goal-progress { display: none; }
+body.mode-goal.goal-has .goal-progress { display: block; }
+~~~
+
+### [3] State Flow
+- 앱이 실행될 때 initValueCalculator가 작동하는 흐름은 다음과 같습니다.
+    1. 초기 진입 : 로컬 스토리지의 토큰 확인.
+    2. 데이터 페칭 : 토큰이 있다면 API를 통해 사용자 데이터 조회.
+    3. 라우팅 : 조회 결과에 따라 initValueCalculator 호출 및 모드 결정.
