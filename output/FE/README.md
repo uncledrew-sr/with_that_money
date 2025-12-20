@@ -19,9 +19,8 @@
 4. style.css
     - mode-basic, goal-has 등 바디 클래스에 따른 레이아웃 전환과 가상 요소 등을 활용한 디자인 시스템을 포함합니다.
 
-# 버블 섹션
-### 버블 시각화 구현 (Bubble Physics Implementation)
-이 섹션은 사용자가 입력한 금액의 가치를 시각적으로 체감할 수 있도록 물리 엔진(Matter.js)을 활용해 역동적인 애니메이션을 구현한 핵심 부분입니다.
+# 버블 시각화 구현 (Bubble Physics Implementation)
+- 사용자가 입력한 금액의 가치를 시각적으로 체감할 수 있도록 물리 엔진(Matter.js)을 활용해 역동적인 애니메이션을 구현한 핵심 부분입니다.
 
 ### [1] 물리 엔진 초기화 및 환경 설정
 - initBubbleEngine 함수를 통해 물리 세계(World)를 생성하고, 중력 및 실행 루프를 설정합니다.
