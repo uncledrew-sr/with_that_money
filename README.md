@@ -1,26 +1,61 @@
 # 개발팀 소개
 <table align="center">
   <tr>
-    <td align="center">
-      <img src="images/dev1.png" width="150px;" alt="개발자1"/><br />
-      <b>황예린</b><br />
-      <p>기획 및 UI 디자인</p>
-      <a href="https://github.com/Hwangyerin">GitHub</a>
-      <div><a href="">Figma URL</a></div>
+    <td align="center" width="230px">
+      <a href="https://github.com/Hwangyerin">
+        <img src="https://github.com/Hwangyerin.png" width="100px;" alt="황예린 프로필"/><br />
+        <sub><b>황예린</b></sub>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" />
+      <img src="https://img.shields.io/badge/UI%2FUX-F24E1E?style=flat-square&logo=Figma&logoColor=white" />
+      <br />
+      <p align="left" style="font-size: 12px; margin-top: 10px;">
+        🎨 <b>기획 및 디자인</b><br/>
+        - 서비스 기획 및 와이어프레임<br/>
+        - UI/UX 레이아웃 및 컬러 시스템<br/>
+        - 사용자 시나리오 설계
+      </p>
+      <a href="YOUR_FIGMA_URL_HERE">
+        <img src="https://img.shields.io/badge/Figma_Design-F24E1E?style=for-the-badge&logo=figma&logoColor=white" height="25px" />
+      </a>
     </td>
-    <td align="center">
-      <img src="images/dev2.png" width="150px;" alt="개발자2"/><br />
-      <b>최범규</b><br />
-      <p>프론트엔드</p>
-      <a href="https://github.com/uncledrew-sr">GitHub</a>
-      <div><a href="https://github.com/uncledrew-sr/with_that_money">Front-end repo(original)</a></div>
+    <td align="center" width="230px">
+      <a href="https://github.com/uncledrew-sr">
+        <img src="https://github.com/uncledrew-sr.png" width="100px;" alt="최범규 프로필"/><br />
+        <sub><b>최범규</b></sub>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Frontend-5F7AFF?style=flat-square&logo=JavaScript&logoColor=white" />
+      <img src="https://img.shields.io/badge/Matter.js-2C3E50?style=flat-square&logo=physics&logoColor=white" />
+      <br />
+      <p align="left" style="font-size: 12px; margin-top: 10px;">
+        💻 <b>프론트엔드 개발</b><br/>
+        - Matter.js 물리 엔진 최적화<br/>
+        - Canvas 애니메이션 구현
+      </p>
+      <a href="https://github.com/uncledrew-sr/with_that_money">
+        <img src="https://img.shields.io/badge/FE_Repo-181717?style=for-the-badge&logo=github&logoColor=white" height="25px" />
+      </a>
     </td>
-    <td align="center">
-      <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
-      <b>이은서</b><br />
-      <p>백엔드</p>
-      <a href="https://github.com/str-leshs">GitHub</a>
-      <div><a href="https://github.com/str-leshs/value-calculator">Back-end repo(original)</a></div>
+    <td align="center" width="230px">
+      <a href="https://github.com/str-leshs">
+        <img src="https://github.com/str-leshs.png" width="100px;" alt="이은서 프로필"/><br />
+        <sub><b>이은서</b></sub>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Backend-3178C6?style=flat-square&logo=Java&logoColor=white" />
+      <img src="https://img.shields.io/badge/Database-4479A1?style=flat-square&logo=MySQL&logoColor=white" />
+      <br />
+      <p align="left" style="font-size: 12px; margin-top: 10px;">
+        💾 <b>백엔드 개발</b><br/>
+        - API 아키텍처 설계 및 구축<br/>
+        - 카카오 OAuth 2.0 인증 구현<br/>
+        - 위시리스트 CRUD 데이터 모델링
+      </p>
+      <a href="https://github.com/str-leshs/value-calculator">
+        <img src="https://img.shields.io/badge/BE_Repo-181717?style=for-the-badge&logo=github&logoColor=white" height="25px" />
+      </a>
     </td>
   </tr>
 </table>

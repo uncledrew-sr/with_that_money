@@ -24,7 +24,8 @@
 이 섹션은 사용자가 입력한 금액의 가치를 시각적으로 체감할 수 있도록 물리 엔진(Matter.js)을 활용해 역동적인 애니메이션을 구현한 핵심 부분입니다.
 
 ### [1] 물리 엔진 초기화 및 환경 설정
-    - initBubbleEngine 함수를 통해 물리 세계(World)를 생성하고, 중력 및 실행 루프를 설정합니다.
+- initBubbleEngine 함수를 통해 물리 세계(World)를 생성하고, 중력 및 실행 루프를 설정합니다.
+
 ~~~JavaScript
 function initBubbleEngine() {
     const { Engine, Runner, Events, Body } = Matter;
@@ -55,6 +56,7 @@ function initBubbleEngine() {
 - 버블 개수($N$) : $N = \lfloor \text{입력 금액} / \text{단위 가격} \rfloor$ (최대 80개 제한).
 - 반지름 계산 공식: 컨테이너 면적의 일정 비율($0.7$)을 점유하도록 계산합니다.
     - $$r = \sqrt{\frac{A_{container} \times 0.7}{N \times \pi}}$$
+
 ~~~JavaScript
 function getBubbleRadius(count) {
     const containerArea = width * height;
@@ -68,6 +70,7 @@ function getBubbleRadius(count) {
 
 ### [3] 물리 바디와 DOM 요소의 생성 및 바인딩
 - updateBubbles 함수는 기존의 버블을 모두 제거한 후, 새로운 설정값에 맞춰 Matter.Bodies.circle과 HTML div 요소를 동시에 생성합니다.
+
 ~~~JavaScript
 for (let i = 0; i < N; i++) {
     const x = Math.random() * width;
