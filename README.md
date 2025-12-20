@@ -1,2 +1,5 @@
-# with_that_money
+# value-calculator
+
+### design
+
 ### front-end
