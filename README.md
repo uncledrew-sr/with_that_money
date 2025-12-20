@@ -1,4 +1,29 @@
 # value-calculator
+
+## 개발팀 소개 (Team Information)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="images/dev1.png" width="150px;" alt="개발자1"/><br />
+      <b>황예린</b><br />
+      <p>기획 및 UI 디자인</p>
+      <a href="https://github.com/id1">GitHub</a>
+    </td>
+    <td align="center">
+      <img src="images/dev2.png" width="150px;" alt="개발자2"/><br />
+      <b>최범규</b><br />
+      <p>프론트엔드</p>
+      <a href="https://github.com/id2">GitHub</a>
+    </td>
+    <td align="center">
+      <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
+      <b>이은서</b><br />
+      <p>백엔드</p>
+      <a href="https://github.com/id3">GitHub</a>
+    </td>
+  </tr>
+</table>
+
 ### 설치 방법
 이 프로젝트는 별도의 빌드 도구(Webpack, Vite 등)가 필요 없는 Vanilla JS 기반 프로젝트입니다.
 
