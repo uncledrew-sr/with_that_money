@@ -38,9 +38,9 @@ python -m http.server 8000
 .
 ├── index.html        # 메인 UI 구조 및 외부 라이브러리 로드
 ├── style.css         # 앱 전반의 디자인 및 모달, 애니메이션 스타일
-├── script.js         # 메인 로직: Matter.js 제어, UI 이벤트 처리, 데이터 바인딩
-├── api.js            # 서비스 계층: 백엔드 API 통신(Fetch) 및 JWT 인증 관리
-├── config.js         # 전역 환경 설정: API 베이스 URL 관리
+├── script.js         # 메인 로직 : Matter.js 제어, UI 이벤트 처리, 데이터 바인딩
+├── api.js            # 서비스 계층 : 백엔드 API 통신(Fetch) 및 JWT 인증 관리
+├── config.js         # 전역 환경 설정 : API 베이스 URL 관리
 └── images/           # 서비스에 사용되는 아이콘 및 이미지 에셋
 ~~~
 
