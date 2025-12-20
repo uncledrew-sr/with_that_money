@@ -7,14 +7,14 @@
         <sub><b>황예린</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" />
+      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" /><br>
       <img src="https://img.shields.io/badge/UI%2FUX-F24E1E?style=flat-square&logo=Figma&logoColor=white" />
       <br />
-      <div align="left" style="margin-top: 10px;">
+      <div align="center" style="margin-top: 10px;">
         <b>기획/디자인</b>
       </div>
       <br />
-      <a href="YOUR_FIGMA_URL_HERE">
+      <a href="https://www.figma.com/design/qRRCKNhX4tLXvtiChWiBa6/%EA%B0%80%EC%B9%98%EA%B3%84%EC%82%B0%EA%B8%B0?node-id=430-8202&p=f&t=xu6So38601XfqQtR-0">
         <img src="https://img.shields.io/badge/Figma_Design-F24E1E?style=for-the-badge&logo=figma&logoColor=white" height="25px" />
       </a>
     </td>
@@ -24,14 +24,14 @@
         <sub><b>최범규</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Frontend-5F7AFF?style=flat-square&logo=JavaScript&logoColor=white" />
+      <img src="https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black" /><br>
       <img src="https://img.shields.io/badge/Matter.js-2C3E50?style=flat-square&logo=physics&logoColor=white" />
       <br />
-      <div align="left" style="margin-top: 10px;">
+      <div align="center" style="margin-top: 10px;">
         <b>프론트엔드</b>
       </div>
       <br />
-      <a href="https://github.com/uncledrew-sr/with_that_money">
+      <a href="https://github.com/JNU-basic-web-value-calculator/value-calculator-fe">
         <img src="https://img.shields.io/badge/FE_Repo-181717?style=for-the-badge&logo=github&logoColor=white" height="25px" />
       </a>
     </td>
@@ -41,10 +41,10 @@
         <sub><b>이은서</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Backend-3178C6?style=flat-square&logo=Java&logoColor=white" />
-      <img src="https://img.shields.io/badge/Database-4479A1?style=flat-square&logo=MySQL&logoColor=white" />
+      <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white" /><br>
+      <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white" />
       <br />
-      <div align="left" style="margin-top: 10px;">
+      <div align="center" style="margin-top: 10px;">
         <b>백엔드</b>
       </div>
       <br />
