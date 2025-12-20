@@ -10,6 +10,24 @@ const ApiService = {
         return headers;
     },
 
+    updateUnit: async (unitId, iconId, unitName, unitPrice, unitCounter) => {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/api/units/${unitId}`, {
+            method: "PUT",
+            headers: ApiService.getHeaders(),
+            body: JSON.stringify({ 
+                iconId,
+                unitName,
+                unitPrice,
+                unitCounter
+            })
+        });
+        
+        if (ApiService.handleAuthError(response.status)) throw new Error("인증 실패");
+        if (!response.ok) throw new Error("수정 실패");
+        
+        return await response.json();
+    },
+
     handleAuthError: (status) => {
         if (status === 401 || status === 403) {
             localStorage.removeItem("accessToken");
