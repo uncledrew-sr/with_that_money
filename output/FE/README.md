@@ -1,4 +1,4 @@
-### 설치 방법
+# 설치 방법
 이 프로젝트는 별도의 빌드 도구(Webpack, Vite 등)가 필요 없는 Vanilla JS 기반 프로젝트입니다.
 
 1. 저장소 클론 (Repository Clone)
@@ -15,7 +15,7 @@ const CONFIG = {
 };
 ~~~
 
-### 실행 방법
+# 실행 방법
 브라우저의 보안 정책(CORS 및 ES 모듈 제한)으로 인해 index.html 파일을 단순히 더블 클릭하여 실행하면 API 통신이나 일부 기능이 작동하지 않을 수 있습니다. 따라서 로컬 웹 서버 환경에서 실행하는 것을 권장합니다.
 
 1. 방법 A : VS Code Live Server 사용
@@ -32,7 +32,7 @@ python -m http.server 8000
 ~~~
 브라우저 주소창에 http://localhost:8000을 입력하여 접속합니다.
 
-### 프로젝트 구조
+# 프로젝트 구조
 ~~~Bash
 .
 ├── index.html        # 메인 UI 구조 및 외부 라이브러리 로드
