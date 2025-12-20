@@ -31,5 +31,5 @@ Figma에 포함되어 있는 내용:
 
 ## Risk Management
 
-`PM_DE_risk.md`  
+[PM_DE_risk.md](./pm_de_risk.md)
   기획 및 디자인 과정에서 발생한 문제, 원인, 대응 및 아쉬운 점을 정리한 문서
