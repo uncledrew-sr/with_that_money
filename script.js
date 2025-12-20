@@ -1,31 +1,64 @@
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+document.addEventListener("DOMContentLoaded", async () => {
+    function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get("code");
+
+    if (authCode) {
+        try {
+            const loginData = await ApiService.loginWithCode(authCode);
+            if (loginData) {
+                alert("로그인 되었습니다!");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const loginBtn = document.getElementById("btn-kakao-login");
 
     if (loginBtn) {
-        loginBtn.addEventListener("click", () => {
-            if (typeof Kakao === 'undefined' || !Kakao.isInitialized()) {
-                alert("카카오 SDK가 초기화되지 않았습니다.");
-                return;
-            }
+        loginBtn.addEventListener("click", async () => {
+            try {
+                const responseData = await ApiService.getKakaoLoginUrl();
+                
+                let data = null;
+                try {
+                    data = JSON.parse(responseData);
+                } catch (e) {}
 
-            Kakao.Auth.login({
-                success: function(authObj) {
-                    console.log("카카오 로그인 성공:", authObj);
-                    alert("로그인 되었습니다! 위시리스트를 작성해보세요.");
-                    
-                    initValueCalculator({ 
-                        loggedIn: true, 
-                        wishlist: null 
-                    });
-                },
-                fail: function(err) {
-                    console.error("로그인 실패:", err);
-                    alert("로그인에 실패했습니다.");
-                },
-            });
+                if (data && data.accessToken) {
+                    localStorage.setItem("accessToken", data.accessToken);
+                    if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
+                    alert(`반갑습니다, ${data.nickname || '회원'}님! 로그인 되었습니다.`);
+                    window.location.reload();
+                    return;
+                }
+
+                if (data && data.url) {
+                    window.location.href = data.url;
+                    return;
+                }
+                if (typeof responseData === 'string' && responseData.startsWith("http")) {
+                    window.location.href = responseData;
+                    return;
+                }
+
+                window.location.href = `${CONFIG.API_BASE_URL}/api/auth/kakao/login`;
+
+            } catch (err) {
+                console.error(err);
+                window.location.href = `${CONFIG.API_BASE_URL}/api/auth/kakao/login`;
+            }
         });
     }
 
@@ -46,62 +79,65 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const BUBBLE_PRESETS = {
-        coffee: {
-            id: "coffee",
-            label: "커피",
-            price: 4500,
-            unit: "잔",
-            img: "images/bubble/bubble-coffee.png",
-            icon: "images/coffee.png"
-        },
-        taxi: {
-            id: "taxi",
-            label: "택시",
-            price: 4800,
-            unit: "번",
-            img: "images/bubble/bubble-taxi.png",
-            icon: "images/taxi.png"
-        },
-        burger: {
-            id: "burger",
-            label: "햄버거",
-            price: 5500,
-            unit: "개",
-            img: "images/bubble/bubble-hamburger.png",
-            icon: "images/hamburger.png"
-        },
-        gukbab: {
-            id: "gukbab",
-            label: "국밥",
-            price: 10000,
-            unit: "그릇",
-            img: "images/bubble/bubble-gukbab.png",
-            icon: "images/gukbab.png"
-        },
-        heart: {
-            id: "heart",
-            label: "하트",
-            price: null,
-            unit: "",
-            img: "images/bubble/bubble-heart.png",
-            icon: "images/heart.png"
-        }
+    const HEART_PRESET = {
+        id: "heart",
+        label: "하트",
+        price: null,
+        unit: "",
+        img: "images/bubble/bubble-heart.png", 
+        icon: "images/heart.png",            
+        isDefault: true
     };
 
-    let customCategories = [];
-    let currentCategoryId = "coffee";
+    let allCategories = [HEART_PRESET];
+    let currentCategoryId = null;
+    let currentWishlistId = null;
 
-    function getPreset(id) {
-        if (BUBBLE_PRESETS[id]) return BUBBLE_PRESETS[id];
-        const custom = customCategories.find(c => c.id === id);
-        if (custom) return custom;
-        return BUBBLE_PRESETS.coffee;
+    function getFullImageUrl(path) {
+        if (!path) return "https://placehold.co/100x100?text=No+Image";
+        if (path.startsWith("http") || path.startsWith("data:")) return path;
+        if (path.startsWith("images/")) return path;
+
+        let cleanPath = path.replace(/\\/g, "/");
+        if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
+
+        return `${CONFIG.API_BASE_URL}${cleanPath}`;
     }
 
-    function getAllCategories() {
-        const base = Object.values(BUBBLE_PRESETS);
-        return [...base, ...customCategories];
+    function handleImageError(imgElement) {
+        imgElement.onerror = null;
+        imgElement.src = "https://placehold.co/100x100?text=Error";
+    }
+
+    async function fetchAndRenderCategories() {
+        const units = await ApiService.getAllUnits();
+        
+        if (units && units.length > 0) {
+            const serverCategories = units.map(u => ({
+                id: u.unitId,
+                label: u.unitName,
+                price: u.unitPrice,
+                unit: u.unitCounter,
+                img: getFullImageUrl(u.iconPath), 
+                icon: getFullImageUrl(u.iconPath),
+                isDefault: u.isDefault
+            }));
+            allCategories = [...serverCategories, HEART_PRESET];
+        } else {
+            allCategories = [HEART_PRESET];
+        }
+
+        if (!currentCategoryId && allCategories.length > 0) {
+            currentCategoryId = allCategories[0].id;
+        }
+
+        renderCategories();
+        updateSummaryCard();
+        updateBubbles();
+    }
+
+    function getPreset(id) {
+        return allCategories.find(c => c.id == id) || allCategories[0];
     }
 
     const wishlistEditBtn = document.querySelector(".wishlist-edit");
@@ -149,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateGoalProgress() {
         if (!wishlist) return;
-        const targetPrice = wishlist.price;
+        const targetPrice = wishlist.price; 
         const ratio = (targetPrice && targetPrice > 0) ? Math.min(savedAmount / targetPrice, 1) : 0;
         const percent = Math.round(ratio * 100);
 
@@ -163,10 +199,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function openWishlistModal() {
         if (!wishlistModal) return;
         wishlistModal.classList.add("is-open");
+        
         if (wishlist && wishNameInput && wishPriceInput && wishUrlInput) {
             wishNameInput.value = wishlist.name;
             wishPriceInput.value = wishlist.price ? `${formatNumber(wishlist.price)}원` : "";
             wishUrlInput.value = wishlist.url || "";
+            if (wishSaveBtn) wishSaveBtn.textContent = "위시리스트 수정하기";
+        } else {
+            if (wishSaveBtn) wishSaveBtn.textContent = "위시리스트 저장하기";
         }
         validateWishlistForm(false);
     }
@@ -188,9 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (wishNameErrorEl) wishNameErrorEl.textContent = "";
 
         if (!name) valid = false;
-        else if (name.length > 10) {
+        else if (name.length > 20) {
             valid = false;
-            if (wishNameErrorEl) wishNameErrorEl.textContent = "상품명은 10자 이하여야 합니다.";
+            if (wishNameErrorEl) wishNameErrorEl.textContent = "상품명은 20자 이하여야 합니다.";
             if (nameField) nameField.classList.add("is-error");
         }
 
@@ -229,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (wishlistForm) {
-        wishlistForm.addEventListener("submit", (e) => {
+        wishlistForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             if (!validateWishlistForm(true)) return;
             
@@ -237,10 +277,30 @@ document.addEventListener("DOMContentLoaded", () => {
             const price = parseInt(wishPriceInput.value.replace(/[^0-9]/g, ""), 10);
             const url = wishUrlInput ? wishUrlInput.value.trim() : "";
 
-            wishlist = { name, price, url };
-            setWishlistButtonLabel();
-            updateGoalProgress();
-            closeWishlistModal();
+            try {
+                let responseData;
+                
+                if (currentWishlistId) {
+                    responseData = await ApiService.updateWishlist(currentWishlistId, name, price, url);
+                    alert("목표가 수정되었습니다!");
+                } else {
+                    responseData = await ApiService.createWishlist(name, price, url);
+                    alert("목표가 저장되었습니다!");
+                }
+
+                if (responseData && responseData.wishlistId) {
+                    currentWishlistId = responseData.wishlistId;
+                }
+                
+                wishlist = { name, price, url };
+                setWishlistButtonLabel();
+                updateGoalProgress();
+                closeWishlistModal();
+                
+            } catch (err) {
+                console.error(err);
+                alert("처리에 실패했습니다.");
+            }
         });
     }
 
@@ -251,15 +311,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const customUnitInput = customModal ? customModal.querySelector("#custom-unit") : null;
     const customPriceInput = customModal ? customModal.querySelector("#custom-price") : null;
     const customSubmitBtn = customModal ? customModal.querySelector(".custom-submit") : null;
-    const customIconInputs = customModal ? customModal.querySelectorAll("input[name='custom-icon']") : [];
+    const iconGrid = customModal ? customModal.querySelector(".icon-grid") : null;
 
-    function openCustomModal() {
+    const MAX_PRICE_LIMIT = 2000000;
+    const MIN_PRICE_LIMIT = 10000;
+    const MAX_NAME_LENGTH = 10;
+    const MAX_UNIT_LENGTH = 3;
+
+    async function openCustomModal() {
         if (!customModal) return;
-        customModal.classList.add("is-open");
+        
         if(customNameInput) customNameInput.value = "";
         if(customUnitInput) customUnitInput.value = "";
         if(customPriceInput) customPriceInput.value = "";
-        if(customIconInputs.length > 0) customIconInputs[0].checked = true;
+        
+        if (iconGrid) {
+            iconGrid.innerHTML = "로딩 중...";
+            const icons = await ApiService.getUnitIcons();
+            iconGrid.innerHTML = "";
+
+            if (icons && icons.length > 0) {
+                icons.forEach((icon, index) => {
+                    const label = document.createElement("label");
+                    label.className = "icon-option";
+                    
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = "custom-icon";
+                    input.value = icon.iconId;
+                    if (index === 0) input.checked = true;
+
+                    const div = document.createElement("div");
+                    div.className = "icon-circle";
+                    
+                    const img = document.createElement("img");
+                    img.src = getFullImageUrl(icon.iconPath);
+                    img.alt = icon.iconName;
+                    img.onerror = () => handleImageError(img);
+
+                    div.appendChild(img);
+                    label.appendChild(input);
+                    label.appendChild(div);
+                    iconGrid.appendChild(label);
+                });
+            } else {
+                iconGrid.innerHTML = "아이콘을 불러오지 못했습니다.";
+            }
+        }
+
+        customModal.classList.add("is-open");
         validateCustomForm();
     }
 
@@ -268,51 +368,78 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function validateCustomForm() {
-        if(!customNameInput || !customPriceInput || !customSubmitBtn) return;
+        if(!customNameInput || !customPriceInput || !customUnitInput || !customSubmitBtn) return;
+        
         const name = customNameInput.value.trim();
+        const unit = customUnitInput.value.trim();
         const priceStr = customPriceInput.value.replace(/[^0-9]/g, "");
+        const price = parseInt(priceStr, 10);
+
         let valid = true;
-        if(!name) valid = false;
-        if(!priceStr) valid = false;
+        
+        if(!name || name.length > MAX_NAME_LENGTH) valid = false;
+        if(!unit || unit.length > MAX_UNIT_LENGTH) valid = false;
+
+        if(!priceStr || isNaN(price) || price < MIN_PRICE_LIMIT || price > MAX_PRICE_LIMIT) valid = false;
+
         customSubmitBtn.disabled = !valid;
         customSubmitBtn.classList.toggle("is-active", valid);
     }
 
     if (customCloseBtn) customCloseBtn.addEventListener("click", closeCustomModal);
     
-    [customNameInput, customPriceInput].forEach(input => {
-        if(input) input.addEventListener("input", () => {
-            if (input === customPriceInput) input.value = input.value.replace(/[^0-9]/g, "");
-            validateCustomForm();
-        });
+    [customNameInput, customUnitInput].forEach(input => {
+        if(input) input.addEventListener("input", validateCustomForm);
     });
 
-    if(customForm) {
-        customForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            if (customCategories.length >= 3) {
-                alert("커스텀 단위는 최대 3개까지 추가할 수 있어요.");
-                closeCustomModal();
-                return;
+    if (customPriceInput) {
+        customPriceInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            
+            let val = parseInt(this.value, 10);
+            if (!isNaN(val) && val > MAX_PRICE_LIMIT) {
+                this.value = MAX_PRICE_LIMIT.toString();
             }
+            validateCustomForm();
+        });
+        
+        customPriceInput.addEventListener("blur", function() {
+            let val = parseInt(this.value.replace(/[^0-9]/g, ""), 10);
+            if (!isNaN(val) && val > 0) {
+                this.value = `${formatNumber(val)}원`;
+            } else {
+                this.value = "";
+            }
+            validateCustomForm();
+        });
+        
+        customPriceInput.addEventListener("focus", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        });
+    }
+
+    if(customForm) {
+        customForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
             const name = customNameInput.value.trim();
-            const unitVal = customUnitInput && customUnitInput.value.trim() ? customUnitInput.value.trim() : "개";
+            const unitVal = customUnitInput.value.trim();
             const price = parseInt(customPriceInput.value.replace(/[^0-9]/g, ""), 10);
-            const selectedIcon = document.querySelector("input[name='custom-icon']:checked").value;
-            const id = `custom-${Date.now()}`;
-            customCategories.push({
-                id: id,
-                label: name,
-                price: price,
-                unit: unitVal,
-                img: selectedIcon
-            });
-            currentCategoryId = id;
-            renderCategories();
-            updateSummaryCard();
-            updateEqualState();
-            updateBubbles();
-            closeCustomModal();
+            const selectedInput = document.querySelector("input[name='custom-icon']:checked");
+            
+            if (!selectedInput) return alert("아이콘을 선택해주세요.");
+            
+            const iconId = parseInt(selectedInput.value, 10);
+
+            try {
+                await ApiService.createUnit(iconId, name, price, unitVal);
+                await fetchAndRenderCategories();
+                closeCustomModal();
+                alert("새로운 단위가 추가되었습니다!");
+            } catch (err) {
+                console.error(err);
+                alert("단위 추가에 실패했습니다.");
+            }
         });
     }
 
@@ -331,29 +458,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const SCROLL_AMOUNT = 140;
     const DEFAULT_AMOUNT = 100000;
-    const MIN_AMOUNT = 1000;
-    const MAX_AMOUNT = 10000000;
 
     function renderCategories() {
         if (!track) return;
         track.innerHTML = "";
-        const cats = getAllCategories();
-        cats.forEach((cat) => {
+        
+        allCategories.forEach((cat) => {
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = "chip" + 
-                (cat.id === currentCategoryId ? " chip-active" : "") + 
-                (cat.id.startsWith("custom-") ? " chip-custom" : "");
+            
+            const isActive = (cat.id == currentCategoryId);
+            const isCustom = (cat.isDefault === false);
+
+            btn.className = `chip ${isActive ? 'chip-active' : ''} ${isCustom ? 'chip-custom' : ''}`;
             btn.textContent = cat.label;
             btn.dataset.categoryId = cat.id;
             track.appendChild(btn);
         });
+
         const addBtn = document.createElement("button");
         addBtn.type = "button";
         addBtn.className = "chip chip-add";
         addBtn.dataset.role = "add-category";
         addBtn.textContent = "+";
         track.appendChild(addBtn);
+        
         updateScrollButtons();
     }
 
@@ -378,6 +507,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return num.toLocaleString("ko-KR");
     }
 
+    const debouncedCalculate = debounce(async (amount, unitId) => {
+        if (unitId === "heart") return;
+
+        const resultData = await ApiService.calculate(amount, unitId);
+        
+        if (resultData) {
+            const targetVal = resultData.result; 
+            const currentText = summaryNumEl.textContent.replace(/[^0-9.]/g, "");
+            const startVal = parseFloat(currentText) || 0;
+            animateFloat(summaryNumEl, startVal, targetVal, 500);
+
+            if(summaryUnitEl) summaryUnitEl.textContent = resultData.unitCounter || "";
+            if(summaryRightEl) summaryRightEl.textContent = `기준가: ${formatNumber(resultData.unitPrice)}원`;
+        } else {
+            const cat = getPreset(unitId);
+            if (cat && cat.price > 0) {
+                const targetVal = amount / cat.price;
+                const currentText = summaryNumEl.textContent.replace(/[^0-9.]/g, "");
+                const startVal = parseFloat(currentText) || 0;
+                animateFloat(summaryNumEl, startVal, targetVal, 500);
+
+                if(summaryUnitEl) summaryUnitEl.textContent = cat.unit || "";
+                if(summaryRightEl) summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
+            }
+        }
+    }, 300);
+
     function updateSummaryCard() {
         const cat = getPreset(currentCategoryId);
         if (!cat || !summaryLabelEl) return;
@@ -385,7 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (summaryCard) {
             summaryCard.style.transition = "background-color 0.3s, border-color 0.3s";
-            
             if (cat.id === "heart") {
                 summaryCard.style.backgroundColor = "#FFF0F5";
                 summaryCard.style.borderColor = "#FFB6C1";
@@ -398,33 +553,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cat.id === "heart") {
             summaryLabelEl.textContent = "널 향한 나의 사랑";
             summaryLabelEl.classList.add("special-heart-text");
+            if(summaryNumEl) summaryNumEl.textContent = "";
+            if(summaryUnitEl) summaryUnitEl.textContent = "";
+            summaryRightEl.textContent = "∞";
         } else {
             summaryLabelEl.textContent = cat.label;
             summaryLabelEl.classList.remove("special-heart-text");
         }
 
         if (summaryIconImgEl) {
-            summaryIconImgEl.src = cat.icon || cat.img;
+            summaryIconImgEl.src = getFullImageUrl(cat.icon || cat.img);
             summaryIconImgEl.alt = cat.label;
+            summaryIconImgEl.onerror = () => handleImageError(summaryIconImgEl);
         }
 
-        if (cat.id === "heart") {
-            if(summaryNumEl) summaryNumEl.textContent = "";
-            if(summaryUnitEl) summaryUnitEl.textContent = "∞";
-            summaryRightEl.textContent = "∞";
-        } else if (cat.price && amount >= 0) {
-            const targetVal = amount / cat.price;
-            const currentText = summaryNumEl.textContent.replace(/[^0-9.]/g, "");
-            const startVal = parseFloat(currentText) || 0;
-            animateFloat(summaryNumEl, startVal, targetVal, 500);
-
-            if(summaryUnitEl) summaryUnitEl.textContent = cat.unit;
-            summaryRightEl.textContent = `기준가: ${formatNumber(cat.price)}원`;
-
-        } else {
-            if(summaryNumEl) summaryNumEl.textContent = "-";
-            if(summaryUnitEl) summaryUnitEl.textContent = "";
-            summaryRightEl.textContent = "기준가 없음";
+        if (cat.id !== "heart" && amount >= 0) {
+            debouncedCalculate(amount, cat.id);
         }
     }
 
@@ -453,20 +597,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         track.addEventListener("scroll", updateScrollButtons);
         
-        track.addEventListener("click", (e) => {
+        track.addEventListener("click", async (e) => {
             const chip = e.target.closest(".chip");
             if (!chip) return;
+            
             if (chip.dataset.role === "add-category") {
                 openCustomModal();
                 return;
             }
+
             const catId = chip.dataset.categoryId;
             if (!catId) return;
+
             currentCategoryId = catId;
             renderCategories();
-            updateSummaryCard();
+            updateSummaryCard(); 
             updateEqualState();
-            updateBubbles();
+            updateBubbles(); 
         });
     }
 
@@ -489,33 +636,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let value = parseInt(this.value);
             
-            if (value > MAX_AMOUNT) {
-                this.value = MAX_AMOUNT.toString(); 
-                value = MAX_AMOUNT;
-                showAmountError("최대 1,000만원까지만 가능해요");
+            if (value > MAX_PRICE_LIMIT) {
+                this.value = MAX_PRICE_LIMIT.toString(); 
+                value = MAX_PRICE_LIMIT;
+                showAmountError("최대 200만원까지만 가능해요");
             } else {
                 hideAmountError();
             }
 
             updateEqualState();
-            updateSummaryCard();
-            updateBubbles();
+            updateBubbles(); 
+            updateSummaryCard(); 
         });
         
         amountInput.addEventListener("change", function() {
             let value = parseInt(this.value.replace(/[^0-9]/g, ""));
-            
-            if (isNaN(value)) {
-                hideAmountError();
-                return;
-            }
+            if (isNaN(value)) { hideAmountError(); return; }
 
-            if (value < MIN_AMOUNT) {
-                showAmountError("최소 1,000원부터 가능해요");
-                this.value = MIN_AMOUNT;
-            } else if (value > MAX_AMOUNT) {
-                showAmountError("최대 1,000만원까지만 가능해요");
-                this.value = MAX_AMOUNT;
+            if (value < MIN_PRICE_LIMIT) {
+                showAmountError("최소 10,000원부터 가능해요");
+                this.value = MIN_PRICE_LIMIT;
+            } else if (value > MAX_PRICE_LIMIT) {
+                showAmountError("최대 200만원까지만 가능해요");
+                this.value = MAX_PRICE_LIMIT;
             } else {
                 hideAmountError();
             }
@@ -533,7 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 amountInput.value = `${formatNumber(v)} 원`;
             }
             const numVal = parseInt(amountInput.value.replace(/[^0-9]/g, ""));
-            if(numVal >= MIN_AMOUNT && numVal <= MAX_AMOUNT) {
+            if(numVal >= MIN_PRICE_LIMIT && numVal <= MAX_PRICE_LIMIT) {
                 hideAmountError();
             }
         });
@@ -756,7 +899,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showSavingOverlay(amountToAdd) {
-        if (!wishlist) return;
+        if (!wishlist || !currentWishlistId) {
+            if (!wishlist) return;
+            alert("목표 정보가 정확하지 않습니다. 페이지를 새로고침 해주세요.");
+            return;
+        }
         const currentSaved = savedAmount; 
         const target = wishlist.price;
         const remain = target - currentSaved - amountToAdd; 
@@ -766,11 +913,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if(ovEls.remain) ovEls.remain.textContent = formatNumber(Math.max(0, remain));
         if(overlaySaving) overlaySaving.classList.add("is-active");
         if(ovEls.btnConfirm) {
-            ovEls.btnConfirm.onclick = () => {
-                savedAmount += amountToAdd;
-                updateGoalProgress();
-                if(overlaySaving) overlaySaving.classList.remove("is-active");
-                if (savedAmount >= target) setTimeout(showCelebrateOverlay, 300);
+            ovEls.btnConfirm.onclick = async () => {
+                try {
+                    await ApiService.addAmount(currentWishlistId, amountToAdd);
+                    savedAmount += amountToAdd;
+                    updateGoalProgress();
+                    if(overlaySaving) overlaySaving.classList.remove("is-active");
+                    if (savedAmount >= target) setTimeout(showCelebrateOverlay, 300);
+                } catch(err) {
+                    alert("저축 처리에 실패했습니다.");
+                }
             };
         }
     }
@@ -829,22 +981,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    renderCategories();
-    updateSummaryCard();
-    updateEqualState();
-    updateBubbles();
+    await fetchAndRenderCategories();
 
-    const MOCK_MODE = "goal-empty";
-    if (MOCK_MODE === "experience") {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+        const myData = await ApiService.getWishlist();
+        if (myData) {
+            currentWishlistId = myData.wishlistId;
+            initValueCalculator({
+                loggedIn: true,
+                wishlist: { 
+                    name: myData.itemName,
+                    price: myData.targetPrice,
+                    url: myData.itemUrl || ""
+                },
+                savedAmount: myData.currentAmount || 0
+            });
+        } else {
+            initValueCalculator({ loggedIn: true, wishlist: null });
+        }
+    } else {
         initValueCalculator({ loggedIn: false });
-    } else if (MOCK_MODE === "goal-empty") {
-        initValueCalculator({ loggedIn: true, wishlist: null });
-    } else if (MOCK_MODE === "goal-has") {
-        initValueCalculator({
-            loggedIn: true,
-            wishlist: { name: "에어팟 프로2", price: 359000, url: "#" },
-            savedAmount: 140000
-        });
     }
 });
 
