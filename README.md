@@ -1,7 +1,4 @@
 # value-calculator
-front-end repo(original) : https://github.com/uncledrew-sr/with_that_money
-back-end repo(original) : https://github.com/str-leshs/value-calculator
-
 ### 개발팀 소개
 <table align="center">
   <tr>
@@ -16,12 +13,14 @@ back-end repo(original) : https://github.com/str-leshs/value-calculator
       <b>최범규</b><br />
       <p>프론트엔드</p>
       <a href="https://github.com/uncledrew-sr">GitHub</a>
+      <a hred="https://github.com/uncledrew-sr/with_that_money">Front-end repo(original)</a>
     </td>
     <td align="center">
       <img src="images/dev3.png" width="150px;" alt="개발자2"/><br />
       <b>이은서</b><br />
       <p>백엔드</p>
       <a href="https://github.com/str-leshs">GitHub</a>
+      <a hred="https://github.com/str-leshs/value-calculator">Back-end repo(original)</a>
     </td>
   </tr>
 </table>
